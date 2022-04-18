@@ -1,6 +1,7 @@
 package com.example.olioharkkaryhmaanypercent;
 
 import android.os.Bundle;
+import android.os.StrictMode;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,6 +12,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
+import java.sql.Array;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,21 +21,21 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+// Luokkarakenne melkein ok, ei tallenna actoreita oikein / niitä ei voi getata oikein en tiiä :D
+// Date ja Time ilmeisesti deprecated, pitää korjata
+
 public class MainActivity extends AppCompatActivity { // asdf
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.activity_main);
         MovieManager movieManager = new MovieManager();
 
         // For testing class construction
-        movieManager.entryList.add(new Entry("12:00", "12.04.2022"));
-        movieManager.entryList.get(0).entryMovie = new Movie("Yön ritari", 123, "Batman ja muut seikailee",
-                new Cast("Nintentovehkeet", new ArrayList<>()), 20000){};
-        movieManager.entryList.add(new Entry("12:00", "13.04.2022"));
-        movieManager.entryList.get(1).entryMovie = new Movie("yokeri", 1234, "asdf",
-                new Cast("Rippikoulu", new ArrayList<>()), 2000){};
+        movieManager.getMovies();
         movieManager.printEntries();
         // Luokkien luomisen testaukseen
     }
@@ -51,33 +53,18 @@ public class MainActivity extends AppCompatActivity { // asdf
 
 
         public void printEntries() { // gettien testaamistarkoitukseen
-            for (int i=0; i<2; i++) {
-                String location = entryList.get(i).getEntryLocation();
-                String name = entryList.get(i).entryMovie.getMovieName();
-                String desc = entryList.get(i).entryMovie.getMovieDescription();
-                String length = entryList.get(i).entryMovie.getMovieLength().toString();
+            for (int i=0; i<this.movieList.size(); i++) {
+                String movieName = this.movieList.get(i).getMovieName();
+                String movieDescription = this.movieList.get(i).getMovieDescription();
+                String movieDirector = this.movieList.get(i).getMovieCast().getCastDirector();
 
 
-                System.out.println("Movie location: " + location);
-                System.out.println("Movie name: " + name + "\n" + "Decription: " + desc);
-                System.out.println("Movie length: " + length + "\n");
-                System.out.println("Movie Director: " + entryList.get(i).entryMovie.getMovieCast().getCastDirector());
+                System.out.println("Movie name: " + movieName + "\n" + "Decription: " + movieDescription);
+                System.out.println("Movie Director: " + movieDirector.trim());
                 System.out.println("Movie actors:");
-                for (int n=0;i<entryList.get(i).entryMovie.getMovieCast().getCastActors().size();n++) {
-                    System.out.println(entryList.get(i).entryMovie.getMovieCast().getCastActors().get(n) + "\n");
-                }
-                System.out.println("\n");
+                System.out.println(this.movieList.get(i).getMovieCast().getCastActors().get(0).trim() + "\n"); // TODO ei tallenna tai tulosta Cast olioon actoreita :D
+                System.out.println("************");
             }
-        }
-        public Movie checkIfMovieExists(int newMovieID) {  // This method goes through entries and checks if a
-            // movie object already exists
-            for (int i = 0;i < this.entryList.size();i++) {
-                int movieID = this.entryList.get(i).entryMovie.getMovieID();
-                if (movieID == newMovieID) {
-                    return this.entryList.get(i).getEntryMovie();
-                }
-            }
-            return null;
         }
         public void getMovies() { // Generate a list of all currently available movies
             try {
@@ -88,24 +75,25 @@ public class MainActivity extends AppCompatActivity { // asdf
                 NodeList nList = doc.getDocumentElement().getElementsByTagName("Event");
 
                 for (int n = 0; n < nList.getLength(); n++) {
-                    Movie newMovie = new Movie();
                     Node node = nList.item(n);
                     Element element = (Element) node;
+                    int movieID = Integer.parseInt(element.getElementsByTagName("ID").item(0).getTextContent());
+                    String movieName = element.getElementsByTagName("Title").item(0).getTextContent();
+                    int length = Integer.parseInt(element.getElementsByTagName("LengthInMinutes").item(0).getTextContent());
+                    int productionYear = Integer.parseInt(element.getElementsByTagName("ProductionYear").item(0).getTextContent());
+                    String description = element.getElementsByTagName("Synopsis").item(0).getTextContent();
+                    ArrayList<String> actors = new ArrayList<>();
+                    String director = element.getElementsByTagName("Directors").item(0).getTextContent();
 
-                    newMovie.setMovieID(Integer.parseInt(element.getElementsByTagName("ID").item(0).getTextContent()));
-                    newMovie.setMovieName(element.getElementsByTagName("Title").item(0).getTextContent());
-                    newMovie.setMovieLength(Integer.parseInt(element.getElementsByTagName("LengthInMinutes").item(0).getTextContent()));
-                    newMovie.setMovieDescription(element.getElementsByTagName("Synopsis").item(0).getTextContent());
-                    newMovie.movieCast = new Cast(
-                            element.getElementsByTagName("Director").item(0).getTextContent();
-                    );
+                    for (int i = 0; i < element.getElementsByTagName("Cast").getLength(); i++) {
+                        actors.add(element.getElementsByTagName("Cast").item(i).getTextContent());
+                    }
+                    this.movieList.add(new Movie(movieName, movieID, description, new Cast(director, (ArrayList<String>)actors.clone()), length, productionYear));
+                    actors.clear();
                 }
-                NodeList nList = doc.getDocumentElement().getElementsByTagName("Cast");
-
-            } catch (IOException | SAXException | ParserConfigurationException e) {
-                e.printStackTrace();
+                } catch (ParserConfigurationException | SAXException | IOException parserConfigurationException) {
+                parserConfigurationException.printStackTrace();
             }
-
         }
         public void getEntries() {  // Gets the entries from Finnkino xml and saves them.
 
@@ -125,6 +113,8 @@ public class MainActivity extends AppCompatActivity { // asdf
                         Element element = (Element) node;
 
                         int movieID = Integer.parseInt(element.getElementsByTagName("EventID").item(0).getTextContent());
+                        String name = element.getElementsByTagName("Title").item(0).getTextContent();
+                        String description = element.getElementsByTagName("Title").item(0).getTextContent();
                         String location = element.getElementsByTagName("Theatre").item(0).getTextContent();
                         int lengthInMin = Integer.parseInt(element.getElementsByTagName("LengthInMinutes").item(0).getTextContent());
                         String[] dateTimeString = element.getElementsByTagName("dttmShowStart").item(0).getTextContent().split("T", 2);
@@ -132,12 +122,7 @@ public class MainActivity extends AppCompatActivity { // asdf
                         String[] timeString = dateTimeString[1].split(":",3);
                         Date date = new Date(Integer.parseInt(dateString[0]), Integer.parseInt(dateString[1]), Integer.parseInt(dateString[2]));
                         Time time = new Time(Integer.parseInt(timeString[0]), Integer.parseInt(timeString[1]), Integer.parseInt(timeString[2]));
-                        Movie newMovie = this.checkIfMovieExists(movieID);
-                        if (newMovie  == null) {
-                            String name = element.getElementsByTagName("Title").item(0).getTextContent();
-                        } else {
-
-                        }
+                        //Movie newMovie = new Movie(name, movieID, ,  , 0);
                     }
                 }
             } catch (IOException | SAXException | ParserConfigurationException e) {
@@ -145,6 +130,7 @@ public class MainActivity extends AppCompatActivity { // asdf
             }
         }
     }
+
     public class Entry { // each entry is fetched from Finkino xml and contains info on one
         // näytös :D of a movie.
         // some näytökset may contain the same movie so more entry class than movie class
@@ -171,22 +157,20 @@ public class MainActivity extends AppCompatActivity { // asdf
             return this.entryTime;
         }
     }
+
     public class Movie {   // Movie class contains information on one unique movie
 
         // Constructor with parameters for movie info
-        public Movie(String movieName, int movieID, String movieDescription, Cast movieCast, int movieLength) {
+        public Movie(String movieName, int movieID, String movieDescription, Cast movieCast, int movieLength, int movieYear) {
             this.movieName = movieName;
             this.movieID = movieID;
             this.movieDescription = movieDescription;
             this.movieCast = movieCast;
-            this.movieLength = new Time(movieLength);
-        }
-        public Movie() {  // Empty constructor
-            this.movieName = "empty";
-            this.movieID = 0;
-            this.movieDescription = "empty";
-            this.movieCast = null;
-            this.movieLength = new Time(0);
+            this.movieLength = movieLength;
+            this.movieYear = movieYear;
+            for (int i = 0; i < this.getMovieCast().getCastActors().size(); i++) {
+                System.out.println(this.getMovieCast().getCastActors().get(i)+"\n");;
+            }
         }
         private String getMovieName() {
             return this.movieName;
@@ -213,6 +197,7 @@ public class MainActivity extends AppCompatActivity { // asdf
         private String movieDescription;
         private int movieLength;
         private Cast movieCast;
+        private int movieYear;
     }
 
     public class Cast {     // Cast class contains a movie's director and actors
@@ -220,10 +205,6 @@ public class MainActivity extends AppCompatActivity { // asdf
         public Cast(String castDirector, ArrayList<String> castActors) { // Constructor with parameters
             this.castDirector = castDirector;
             this.castActors = castActors;
-        }
-        public Cast() {         // Empty constructor
-            this.castDirector = "empty";
-            this.castActors = null;
         }
         private String getCastDirector() {
             return this.castDirector;
