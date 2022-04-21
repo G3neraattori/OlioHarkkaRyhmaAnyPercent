@@ -62,7 +62,10 @@ public class MainActivity extends AppCompatActivity { // asdf
                 System.out.println("Movie name: " + movieName + "\n" + "Decription: " + movieDescription);
                 System.out.println("Movie Director: " + movieDirector.trim());
                 System.out.println("Movie actors:");
-                System.out.println(this.movieList.get(i).getMovieCast().getCastActors().get(0).trim() + "\n"); // TODO ei tallenna tai tulosta Cast olioon actoreita :D
+                for (int n = 0;n < this.movieList.get(i).getMovieCast().getCastActors().size();n++) {
+                    System.out.println(this.movieList.get(i).getMovieCast().getCastActors().get(n));
+                }
+                 // TODO ei tallenna tai tulosta Cast olioon actoreita :D
                 System.out.println("************");
             }
         }
@@ -83,10 +86,25 @@ public class MainActivity extends AppCompatActivity { // asdf
                     int productionYear = Integer.parseInt(element.getElementsByTagName("ProductionYear").item(0).getTextContent());
                     String description = element.getElementsByTagName("Synopsis").item(0).getTextContent();
                     ArrayList<String> actors = new ArrayList<>();
-                    String director = element.getElementsByTagName("Directors").item(0).getTextContent();
+                    String[] directorArray = element.getElementsByTagName("Directors").item(0).getTextContent().split("\n");
+                    String director = "";
+                    if (directorArray.length!=1) {
+                        director = directorArray[0].trim() + " " + directorArray[1].trim();
+                    } else {
+                        director = directorArray[0].trim();
+                    }
+
+                    String actor_string = ""; // a string to help with extracting actors
 
                     for (int i = 0; i < element.getElementsByTagName("Cast").getLength(); i++) {
-                        actors.add(element.getElementsByTagName("Cast").item(i).getTextContent());
+                        actor_string = element.getElementsByTagName("Cast").item(i).getTextContent();
+                        String[] actor_array = actor_string.split("\n");
+                        if (actor_array.length != 1) {
+                            for (int j = 0; j*2+3 < actor_array.length; j++) {
+                                actors.add(actor_array[j*2+2].trim() + " " + actor_array[j*2+3].trim());
+                            }
+
+                        }
                     }
                     this.movieList.add(new Movie(movieName, movieID, description, new Cast(director, (ArrayList<String>)actors.clone()), length, productionYear));
                     actors.clear();
@@ -122,6 +140,7 @@ public class MainActivity extends AppCompatActivity { // asdf
                         String[] timeString = dateTimeString[1].split(":",3);
                         Date date = new Date(Integer.parseInt(dateString[0]), Integer.parseInt(dateString[1]), Integer.parseInt(dateString[2]));
                         Time time = new Time(Integer.parseInt(timeString[0]), Integer.parseInt(timeString[1]), Integer.parseInt(timeString[2]));
+                        //TODO Date ja Time vanhentuneita kai
                         //Movie newMovie = new Movie(name, movieID, ,  , 0);
                     }
                 }
@@ -168,9 +187,6 @@ public class MainActivity extends AppCompatActivity { // asdf
             this.movieCast = movieCast;
             this.movieLength = movieLength;
             this.movieYear = movieYear;
-            for (int i = 0; i < this.getMovieCast().getCastActors().size(); i++) {
-                System.out.println(this.getMovieCast().getCastActors().get(i)+"\n");;
-            }
         }
         private String getMovieName() {
             return this.movieName;
@@ -210,7 +226,7 @@ public class MainActivity extends AppCompatActivity { // asdf
             return this.castDirector;
         }
         private ArrayList<String> getCastActors() {
-            return castActors;
+            return this.castActors;
         }
         private String castDirector;
         private ArrayList<String> castActors;
