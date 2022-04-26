@@ -1,6 +1,10 @@
 package com.example.olioharkkaryhmaanypercent;
 
-import org.json.JSONObject;
+//import org.json.JSONObject;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -19,7 +23,8 @@ import java.util.Base64;
 public class UserData {
     private static FileWriter file;
 
-    public static void main(String[] args) throws NoSuchAlgorithmException {
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static void main() throws NoSuchAlgorithmException {
         String passwordToHash = "password";
         byte[] salt = getSalt();
 
@@ -30,6 +35,7 @@ public class UserData {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private static String get_SHA_256_SecurePassword(String passwordToHash, byte[] salt, String username, boolean cym) {
 
         String generatedPassword = null;
@@ -87,6 +93,7 @@ public class UserData {
         return salt;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private static boolean validatePassword(String givenPass, String username) throws NoSuchAlgorithmException {
         JSONParser parser = new JSONParser();
         JSONObject jsonObject = null;
