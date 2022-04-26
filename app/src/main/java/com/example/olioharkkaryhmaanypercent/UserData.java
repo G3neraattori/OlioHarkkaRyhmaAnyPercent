@@ -59,10 +59,10 @@ public class UserData {
 
                 try{
                     JSONParser parser = new JSONParser();
-                    JSONArray list = (JSONArray) parser.parse(new FileReader("./database.json"));;
+                    JSONArray list = (JSONArray) parser.parse(new FileReader("./database/database.json"));;
                     list.add(obj);
                     //System.out.println(list);
-                    file = new FileWriter("./database.json");
+                    file = new FileWriter("./database/database.json");
                     file.write(list.toJSONString());
                     file.flush();
                     file.close();
@@ -99,7 +99,7 @@ public class UserData {
         JSONObject jsonObject = null;
 
         try {
-            JSONArray array = (JSONArray) parser.parse(new FileReader("./database.json"));
+            JSONArray array = (JSONArray) parser.parse(new FileReader("./database/database.json"));
 
 
             for(int i = 0; i < array.size(); i++){
