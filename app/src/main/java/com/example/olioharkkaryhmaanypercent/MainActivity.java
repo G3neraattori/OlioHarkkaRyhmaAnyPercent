@@ -5,26 +5,32 @@ import android.os.StrictMode;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.sql.Array;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 // Luokkarakenne melkein ok, ei tallenna actoreita oikein / niitä ei voi getata oikein en tiiä :D
 // Date ja Time ilmeisesti deprecated, pitää korjata
 
-public class MainActivity extends AppCompatActivity { // asdf
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,41 +41,54 @@ public class MainActivity extends AppCompatActivity { // asdf
         MovieManager movieManager = new MovieManager();
 
         // For testing class construction
-        movieManager.getMovies();
+        movieManager.generateMovieList();
+        movieManager.generateEntryList();
+        //movieManager.getDataFromImdb();
         movieManager.printEntries();
-        // Luokkien luomisen testaukseen
     }
-
 
 
     public class MovieManager {   // MovieManager class contains the list for all movie entries
         private ArrayList<Entry> entryList;
-        private ArrayList<Movie> movieList; // lists all currently available movies
+        private HashMap<String, Movie> movieList; // lists all currently available movies
 
         public MovieManager() {
             this.entryList = new ArrayList<>();
-            this.movieList = new ArrayList<>();
+            this.movieList = new HashMap<>();
         }
 
+        public HashMap<String, Movie> getMovieList() {
+            return this.movieList;
+        }
+
+        public ArrayList<Entry> getEntryList() {
+            return this.entryList;
+        }
 
         public void printEntries() { // gettien testaamistarkoitukseen
-            for (int i=0; i<this.movieList.size(); i++) {
-                String movieName = this.movieList.get(i).getMovieName();
-                String movieDescription = this.movieList.get(i).getMovieDescription();
-                String movieDirector = this.movieList.get(i).getMovieCast().getCastDirector();
-
-
-                System.out.println("Movie name: " + movieName + "\n" + "Decription: " + movieDescription);
-                System.out.println("Movie Director: " + movieDirector.trim());
+            ArrayList<Entry> listOfEntries = this.getEntryList();
+            for (int i = 0; i < 50; i++) {
+                Entry entry = listOfEntries.get(i);
+                System.out.println("Entry data: ");
+                System.out.println("Entry location: " + entry.getEntryLocation());
+                System.out.println("Entry time and date: " + entry.getEntryDate().toString() + " " + entry.getEntryTime().toString());
+                System.out.println("MovieID: " + entry.getEntryMovie(this).getMovieID());
+                System.out.println("Movie title: " + entry.getEntryMovie(this).getMovieName());
+                System.out.println("Movie year: " + entry.getEntryMovie(this).getMovieYear());
+                System.out.println("Movie length: " + entry.getEntryMovie(this).getMovieLength() + " minutes");
+                System.out.println("Movie synopsis: " + entry.getEntryMovie(this).getMovieDescription());
+                System.out.println("Movie director: " + entry.getEntryMovie(this).getMovieCast().getCastDirector());
+                System.out.println("Movie rating IMDB: " + entry.getEntryMovie(this).getImdbRating());
+                System.out.println("Movie image url: " + entry.getEntryMovie(this).getImageurl());
                 System.out.println("Movie actors:");
-                for (int n = 0;n < this.movieList.get(i).getMovieCast().getCastActors().size();n++) {
-                    System.out.println(this.movieList.get(i).getMovieCast().getCastActors().get(n));
+                for (int j = 0; j < entry.getEntryMovie(this).getMovieCast().getCastActors().size(); j++) {
+                    System.out.println(entry.getEntryMovie(this).getMovieCast().getCastActors().get(j));
                 }
-                 // TODO ei tallenna tai tulosta Cast olioon actoreita :D
-                System.out.println("************");
+                System.out.println("*******************");
             }
         }
-        public void getMovies() { // Generate a list of all currently available movies
+
+        public void generateMovieList() { // Generate a list of all currently available movies
             try {
                 DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
                 String url = "https://www.finnkino.fi/xml/Events/";
@@ -82,44 +101,45 @@ public class MainActivity extends AppCompatActivity { // asdf
                     Element element = (Element) node;
                     int movieID = Integer.parseInt(element.getElementsByTagName("ID").item(0).getTextContent());
                     String movieName = element.getElementsByTagName("Title").item(0).getTextContent();
+                    String originalName = element.getElementsByTagName("OriginalTitle").item(0).getTextContent();
                     int length = Integer.parseInt(element.getElementsByTagName("LengthInMinutes").item(0).getTextContent());
                     int productionYear = Integer.parseInt(element.getElementsByTagName("ProductionYear").item(0).getTextContent());
-                    String description = element.getElementsByTagName("Synopsis").item(0).getTextContent();
+                    String description = element.getElementsByTagName("Synopsis").item(0).getTextContent().replace("\n", "");
                     ArrayList<String> actors = new ArrayList<>();
+                    Element image = (Element)element.getElementsByTagName("Images").item(0);
+                    String imageurl = image.getTextContent().split("\n")[3].trim();
                     String[] directorArray = element.getElementsByTagName("Directors").item(0).getTextContent().split("\n");
-                    String director = "";
-                    if (directorArray.length!=1) {
-                        director = directorArray[0].trim() + " " + directorArray[1].trim();
+                    String director;
+                    if (directorArray.length > 1) {
+                        director = directorArray[2].trim() + " " + directorArray[3].trim();
                     } else {
                         director = directorArray[0].trim();
                     }
 
-                    String actor_string = ""; // a string to help with extracting actors
-
+                    String actor_string; // a string to help with extracting actors
                     for (int i = 0; i < element.getElementsByTagName("Cast").getLength(); i++) {
                         actor_string = element.getElementsByTagName("Cast").item(i).getTextContent();
                         String[] actor_array = actor_string.split("\n");
-                        if (actor_array.length != 1) {
-                            for (int j = 0; j*2+3 < actor_array.length; j++) {
-                                actors.add(actor_array[j*2+2].trim() + " " + actor_array[j*2+3].trim());
+                        for (int j = 0; j < actor_array.length; j = j + 2) {
+                            if (actor_array[j].length() > 8) {
+                                actors.add(actor_array[j].trim() + " " + actor_array[j + 1].trim());
                             }
-
                         }
                     }
-                    this.movieList.add(new Movie(movieName, movieID, description, new Cast(director, (ArrayList<String>)actors.clone()), length, productionYear));
+                    this.movieList.put(Integer.toString(movieID), new Movie(movieName, movieID, description, originalName, new Cast(director, (ArrayList<String>) actors.clone()), length, productionYear, imageurl));
                     actors.clear();
                 }
-                } catch (ParserConfigurationException | SAXException | IOException parserConfigurationException) {
+            } catch (ParserConfigurationException | SAXException | IOException parserConfigurationException) {
                 parserConfigurationException.printStackTrace();
             }
         }
-        public void getEntries() {  // Gets the entries from Finnkino xml and saves them.
+
+        public void generateEntryList() {  // Gets the entries from Finnkino xml and saves them.
 
             // List containing all the theater ids to go through
-            int[] allTheatersId = {1014,1015,1016,1017,1018,1019,1021,1022,1041};
-
+            int[] allTheatersId = {1014, 1015, 1016, 1017, 1018, 1019, 1021, 1022, 1041};
             try {
-                for (int i = 0; i<9;i++) {
+                for (int i = 0; i < 9; i++) {
                     DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
                     String url = "https://www.finnkino.fi/xml/Schedule/?area=" + allTheatersId[i] + "&nrOfDays=31";
                     Document doc = builder.parse(url);
@@ -131,104 +151,205 @@ public class MainActivity extends AppCompatActivity { // asdf
                         Element element = (Element) node;
 
                         int movieID = Integer.parseInt(element.getElementsByTagName("EventID").item(0).getTextContent());
-                        String name = element.getElementsByTagName("Title").item(0).getTextContent();
-                        String description = element.getElementsByTagName("Title").item(0).getTextContent();
                         String location = element.getElementsByTagName("Theatre").item(0).getTextContent();
                         int lengthInMin = Integer.parseInt(element.getElementsByTagName("LengthInMinutes").item(0).getTextContent());
                         String[] dateTimeString = element.getElementsByTagName("dttmShowStart").item(0).getTextContent().split("T", 2);
-                        String[] dateString = dateTimeString[0].split("-",3);
-                        String[] timeString = dateTimeString[1].split(":",3);
+                        String[] dateString = dateTimeString[0].split("-", 3);
+                        String[] timeString = dateTimeString[1].split(":", 3);
                         Date date = new Date(Integer.parseInt(dateString[0]), Integer.parseInt(dateString[1]), Integer.parseInt(dateString[2]));
                         Time time = new Time(Integer.parseInt(timeString[0]), Integer.parseInt(timeString[1]), Integer.parseInt(timeString[2]));
-                        //TODO Date ja Time vanhentuneita kai
-                        //Movie newMovie = new Movie(name, movieID, ,  , 0);
+                        // Date and Time classes are deprecated, but couldnt figure another way to do this, as LocalTime and LocalDate dont
+                        // work on android 6.0
+                        this.getEntryList().add(new Entry(movieID, location, lengthInMin, date, time));
                     }
                 }
             } catch (IOException | SAXException | ParserConfigurationException e) {
                 e.printStackTrace();
             }
         }
-    }
 
-    public class Entry { // each entry is fetched from Finkino xml and contains info on one
-        // näytös :D of a movie.
-        // some näytökset may contain the same movie so more entry class than movie class
-        public Entry(String entryTime, String entryDate) {
-            this.entryMovie = null;
-            this.entryTime = new Time(0,0,0);
-            this.entryDate = new Date(0,0,0);
-            this.entryLocation = "lappeen Ranta";
+        public void getDataFromImdb() {
+            for (Movie movie : this.getMovieList().values()) {
+                try {
+                    String searchTerm = movie.getOriginalName();
+                    DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                    String apiKey = "k_aaaaaaaa";
+                    URL url = new URL("https://imdb-api.com/API/AdvancedSearch/" + apiKey + "/?title=" + searchTerm);
+                    HttpURLConnection connection;
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.setDoInput(true);
 
-        }
-        private Movie entryMovie;
-        private Date entryDate;
-        private Time entryTime;
-        private String entryLocation;
-
-        private Movie getEntryMovie() { return this.entryMovie; }
-        private Date getEntryDate() {
-            return this.entryDate;
-        }
-        private String getEntryLocation() {
-            return this.entryLocation;
-        }
-        private Time getEntryTime() {
-            return this.entryTime;
-        }
-    }
-
-    public class Movie {   // Movie class contains information on one unique movie
-
-        // Constructor with parameters for movie info
-        public Movie(String movieName, int movieID, String movieDescription, Cast movieCast, int movieLength, int movieYear) {
-            this.movieName = movieName;
-            this.movieID = movieID;
-            this.movieDescription = movieDescription;
-            this.movieCast = movieCast;
-            this.movieLength = movieLength;
-            this.movieYear = movieYear;
-        }
-        private String getMovieName() {
-            return this.movieName;
-        }
-        private int getMovieID() { return this.movieID; }
-        private String getMovieDescription() {
-            return this.movieDescription;
-        }
-        private Cast getMovieCast() {
-            return this.movieCast;
-        }
-        private int getMovieLength() {
-            return this.movieLength;
+                    InputStream stream = connection.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+                    StringBuilder stringBuilder = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        stringBuilder.append(line + "\n");
+                    }
+                    reader.close();
+                    String jsonString = stringBuilder.toString();
+                    JSONObject jsonObject = new JSONObject(jsonString);
+                    if (jsonObject.getJSONArray("results").length() != 0) {
+                        JSONObject results = jsonObject.getJSONArray("results").getJSONObject(0);
+                        String ratingString = results.getString("imDbRating");
+                        System.out.println(ratingString + "Tää on se score");
+                        try {
+                            movie.setImdbRating(Double.parseDouble(ratingString));
+                        } catch (NullPointerException | NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } catch (IOException | ParserConfigurationException | JSONException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
-        private void setMovieName(String movieName) { this.movieName = movieName; }
-        private void setMovieID(int movieID) { this.movieID = movieID; }
-        private void setMovieDescription(String movieDescription) { this.movieName = movieDescription; }
-        private void setMovieCast(Cast movieCast) { this.movieCast = movieCast; }
-        private void setMovieLength(int movieLength) { this.movieLength = movieLength; }
+        public class Entry { // each entry is fetched from Finkino xml and contains info on one
+                            // showing of a movie
+            public Entry(int movieID, String location, int lengthInMin, Date entryDate, Time entryTime) {
+                this.movieID = movieID;
+                this.entryTime = entryTime;
+                this.entryDate = entryDate;
+                this.entryLocation = location;
+                this.lengthInMin = lengthInMin;
 
-        private String movieName;
-        private int movieID;
-        private String movieDescription;
-        private int movieLength;
-        private Cast movieCast;
-        private int movieYear;
-    }
+            }
 
-    public class Cast {     // Cast class contains a movie's director and actors
-                            // Could be integrated to movie class ??
-        public Cast(String castDirector, ArrayList<String> castActors) { // Constructor with parameters
-            this.castDirector = castDirector;
-            this.castActors = castActors;
+            private int movieID;
+            private Date entryDate;
+            private Time entryTime;
+            private String entryLocation;
+            private int lengthInMin;
+
+
+            private Date getEntryDate() {
+                return this.entryDate;
+            }
+
+            private String getEntryLocation() {
+                return this.entryLocation;
+            }
+
+            private Time getEntryTime() {
+                return this.entryTime;
+            }
+
+            private int getMovieID() {
+                return this.movieID;
+            }
+
+            private Movie getEntryMovie(MovieManager movieManager) {
+                return movieManager.getMovieList().get(Integer.toString(this.movieID));
+            }
         }
-        private String getCastDirector() {
-            return this.castDirector;
+
+        public class Movie {   // Movie class contains information on one unique movie
+            // Constructor with parameters for movie info
+            public Movie(String movieName, int movieID, String movieDescription, String originalName, Cast movieCast, int movieLength, int movieYear, String imageurl) {
+                this.movieName = movieName;
+                this.originalName = originalName;
+                this.movieID = movieID;
+                this.movieDescription = movieDescription;
+                this.movieCast = movieCast;
+                this.movieLength = movieLength;
+                this.movieYear = movieYear;
+                this.imdbRating = 0.0;
+                this.imageurl = imageurl;
+            }
+
+            private String getMovieName() {
+                return this.movieName;
+            }
+
+            private String getOriginalName() {
+                return this.originalName;
+            }
+
+            private int getMovieID() {
+                return this.movieID;
+            }
+
+            private String getMovieDescription() {
+                return this.movieDescription;
+            }
+
+            private Cast getMovieCast() {
+                return this.movieCast;
+            }
+
+            private int getMovieLength() {
+                return this.movieLength;
+            }
+
+            private int getMovieYear() {
+                return this.movieYear;
+            }
+
+            private double getImdbRating() {
+                return this.imdbRating;
+            }
+
+            private String getImageurl() { return this.imageurl; }
+
+            private void setMovieName(String movieName) {
+                this.movieName = movieName;
+            }
+
+            private void setMovieID(int movieID) {
+                this.movieID = movieID;
+            }
+
+            private void setMovieDescription(String movieDescription) {
+                this.movieName = movieDescription;
+            }
+
+            private void setMovieCast(Cast movieCast) {
+                this.movieCast = movieCast;
+            }
+
+            private void setMovieLength(int movieLength) {
+                this.movieLength = movieLength;
+            }
+
+            private void setImdbRating(double imdbRating) {
+                this.imdbRating = imdbRating;
+            }
+
+            private void setOriginalName(String originalName) {
+                this.originalName = originalName;
+            }
+            private void setImageurl(String imageurl) { this.imageurl = imageurl; }
+
+            private String movieName;
+            private int movieID;
+            private String movieDescription;
+            private int movieLength;
+            private Cast movieCast;
+            private int movieYear;
+            private double imdbRating;
+            private String originalName;
+            private String imageurl;
         }
-        private ArrayList<String> getCastActors() {
-            return this.castActors;
+
+        public class Cast {     // Cast class contains a movie's director and actors
+            // Could be integrated to movie class ??
+            public Cast(String castDirector, ArrayList<String> castActors) { // Constructor with parameters
+                this.castDirector = castDirector;
+                this.castActors = castActors;
+            }
+
+            private String getCastDirector() {
+                return this.castDirector;
+            }
+
+            private ArrayList<String> getCastActors() {
+                return this.castActors;
+            }
+
+            private String castDirector;
+            private ArrayList<String> castActors;
         }
-        private String castDirector;
-        private ArrayList<String> castActors;
     }
 }
