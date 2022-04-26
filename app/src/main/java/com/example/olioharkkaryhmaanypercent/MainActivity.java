@@ -2,8 +2,18 @@ package com.example.olioharkkaryhmaanypercent;
 
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toolbar;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.material.navigation.NavigationView;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -29,9 +39,36 @@ public class MainActivity extends AppCompatActivity { // asdf
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment;
+
+
+                if (view == findViewById(R.id.button1)) {
+                    System.out.println("Fragment 1");
+                    fragment = new Fragment1();
+                } else {
+                    System.out.println("Fragment 2");
+                    fragment = new Fragment2();
+                }
+
+                FragmentManager manager = getSupportFragmentManager();
+                FragmentTransaction transaction = manager.beginTransaction();
+                transaction.replace(R.id.fragmentWindow, fragment);
+                transaction.commit();
+            }
+        };
+
+        Button btn1 = findViewById(R.id.button1);
+        btn1.setOnClickListener(listener);
+        Button btn2 = findViewById(R.id.button2);
+        btn2.setOnClickListener(listener);
+
+
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        setContentView(R.layout.activity_main);
         MovieManager movieManager = new MovieManager();
 
         // For testing class construction
@@ -39,6 +76,8 @@ public class MainActivity extends AppCompatActivity { // asdf
         movieManager.printEntries();
         // Luokkien luomisen testaukseen
     }
+
+
 
 
 
