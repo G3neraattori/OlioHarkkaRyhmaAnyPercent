@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-public class Fragment2 extends Fragment{
+public class Fragment3 extends Fragment {
 
     View view;
 
@@ -18,13 +18,13 @@ public class Fragment2 extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_fragment2, container, false);
+        view = inflater.inflate(R.layout.fragment_fragment3, container, false);
         return view;
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        TextView text = this.view.findViewById(R.id.text2);
-        text.setText("MOIKKA");
+        TextView text = this.view.findViewById(R.id.text3);
+        text.setText("HALOO");
     }
 
 

@@ -55,9 +55,12 @@ public class MainActivity extends AppCompatActivity {
                 if (view == findViewById(R.id.button1)) {
                     System.out.println("Fragment 1");
                     fragment = new Fragment1();
-                } else {
+                } else if (view == findViewById(R.id.button2)) {
                     System.out.println("Fragment 2");
                     fragment = new Fragment2();
+                } else {
+                    System.out.println("Fragment 3");
+                    fragment = new Fragment3();
                 }
 
                 FragmentManager manager = getSupportFragmentManager();
@@ -71,11 +74,12 @@ public class MainActivity extends AppCompatActivity {
         btn1.setOnClickListener(listener);
         Button btn2 = findViewById(R.id.button2);
         btn2.setOnClickListener(listener);
+        Button btn3 = findViewById(R.id.button3);
+        btn3.setOnClickListener(listener);
 
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        setContentView(R.layout.activity_main);
         MovieManager movieManager = new MovieManager();
 
         // For testing class construction
