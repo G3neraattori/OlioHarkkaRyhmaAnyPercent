@@ -1,7 +1,10 @@
 package com.example.olioharkkaryhmaanypercent;
 
 //import org.json.JSONObject;
+import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.os.Build;
+import android.os.Environment;
 
 import androidx.annotation.RequiresApi;
 
@@ -10,21 +13,30 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 
 
-public class UserData {
+public class UserData extends MainActivity{
     private static FileWriter file;
+    private Context context;
+
+    public UserData(Context context) {
+        this.context = context;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public static void main() throws NoSuchAlgorithmException {
+    public void main() throws NoSuchAlgorithmException {
         String passwordToHash = "password";
         byte[] salt = getSalt();
 
@@ -33,10 +45,11 @@ public class UserData {
         validatePassword("password", "AA");
         //validatePassword("1234", "AA");
 
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private static String get_SHA_256_SecurePassword(String passwordToHash, byte[] salt, String username, boolean cym) {
+    private String get_SHA_256_SecurePassword(String passwordToHash, byte[] salt, String username, boolean cym) {
 
         String generatedPassword = null;
         try {
@@ -59,10 +72,14 @@ public class UserData {
 
                 try{
                     JSONParser parser = new JSONParser();
-                    JSONArray list = (JSONArray) parser.parse(new FileReader("./database/database.json"));;
+
+                    AssetFileDescriptor descriptor = context.getAssets().openFd("database.json");
+                    System.out.println(new FileReader(descriptor.getFileDescriptor()));
+                    JSONArray list = (JSONArray) parser.parse(new InputStreamReader(new FileInputStream(descriptor.getFileDescriptor())));
+                    System.out.println(list);
                     list.add(obj);
                     //System.out.println(list);
-                    file = new FileWriter("./database/database.json");
+                    file = new FileWriter(descriptor.getFileDescriptor());
                     file.write(list.toJSONString());
                     file.flush();
                     file.close();
@@ -94,12 +111,14 @@ public class UserData {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private static boolean validatePassword(String givenPass, String username) throws NoSuchAlgorithmException {
+    private boolean validatePassword(String givenPass, String username) throws NoSuchAlgorithmException {
         JSONParser parser = new JSONParser();
         JSONObject jsonObject = null;
 
         try {
-            JSONArray array = (JSONArray) parser.parse(new FileReader("./database/database.json"));
+            AssetFileDescriptor descriptor = context.getAssets().openFd("database.json");
+
+            JSONArray array = (JSONArray) parser.parse(new FileReader(descriptor.getFileDescriptor()));
 
 
             for(int i = 0; i < array.size(); i++){
