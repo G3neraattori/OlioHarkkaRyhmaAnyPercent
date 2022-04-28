@@ -42,20 +42,30 @@ public class UserData extends MainActivity{
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void main() throws NoSuchAlgorithmException {
-        String passwordToHash = "password";
+        /*String passwordToHash = "password";
         byte[] salt = getSalt();
 
-        String securePassword = get_SHA_256_SecurePassword(passwordToHash, salt, "AA", false);
-        //System.out.println(securePassword);
+        String securePassword = getPass(passwordToHash, salt, "AA", false);
         validatePassword("password", "AA");
-        //validatePassword("1234", "AA");
-
+        validatePassword("1234", "AA");*/
 
     }
 
+    //Tekee käyttäjän
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private String get_SHA_256_SecurePassword(String passwordToHash, byte[] salt, String username, boolean cym) {
+    public boolean createUser(String username, String passwordToHash) throws NoSuchAlgorithmException {
+        byte[] salt = getSalt();
+        String generated = getPass(passwordToHash, salt, username, false);
+
+        return generated != null;
+    }
+
+
+    //Luo ja uudelleen luo hashejä.
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private String getPass(String passwordToHash, byte[] salt, String username, boolean notCreating) {
         File asset = new File(context.getFilesDir().getPath()+"database.json");
+        //Ensimmäisellä asennuksella kopio database.json assettin
         if(!asset.exists()){
             try {
                 copydatabase();
@@ -64,6 +74,7 @@ public class UserData extends MainActivity{
             }
         }
         String generatedPassword = null;
+        //Tekee uuden olion .json
         try {
             JSONObject obj = new JSONObject();
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -77,16 +88,13 @@ public class UserData extends MainActivity{
                 sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
             }
             obj.put("hash", sb.toString());
-            //System.out.println(obj);
             generatedPassword = sb.toString();
 
-            if(cym != true){
+            if(!notCreating){
 
                 try{
                     JSONParser parser = new JSONParser();
-
-                    AssetFileDescriptor descriptor = context.getAssets().openFd("database.json");
-
+                    
                     BufferedReader br = new BufferedReader (new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"database.json")));
                     String line;
                     while((line = br.readLine()) != null){
@@ -95,7 +103,6 @@ public class UserData extends MainActivity{
                     JSONArray list = (JSONArray) parser.parse(new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"database.json")));
                     System.out.println(list);
                     list.add(obj);
-                    //System.out.println(list);
                     file = new OutputStreamWriter(new FileOutputStream(context.getFilesDir().getPath()+"database.json"));
                     file.write(list.toJSONString());
                     file.flush();
@@ -118,60 +125,59 @@ public class UserData extends MainActivity{
         return generatedPassword;
     }
 
-    public void copydatabase() throws IOException {
+    private void copydatabase() throws IOException {
          final String path = context.getFilesDir().getPath();
          final String Name = "database.json";
 
-        OutputStream myOutput = new FileOutputStream(path + Name);
+        OutputStream os = new FileOutputStream(path + Name);
         byte[] buffer = new byte[1024];
         int length;
-        InputStream myInput = context.getAssets().open("database.json");
-        while ((length = myInput.read(buffer)) > 0) {
-            myOutput.write(buffer, 0, length);
+        InputStream is = context.getAssets().open("database.json");
+        while ((length = is.read(buffer)) > 0) {
+            os.write(buffer, 0, length);
         }
-        myInput.close();
-        myOutput.flush();
-        myOutput.close();
+        is.close();
+        os.flush();
+        os.close();
 
     }
 
-    // Add salt
+    // Lisää salt
     private static byte[] getSalt() throws NoSuchAlgorithmException {
         SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
         byte[] salt = new byte[64];
         sr.nextBytes(salt);
-        System.out.println(salt);
         return salt;
     }
 
+
+    //Returnaa TRUE jos löytyi käyttäjä false jos ei
+    //TALLENTAA VAIN PUHELIMEEN PITÄISI MUUTTAA TALLENTAMAAN PALVELIMELLE MUTTA MEILLÄ EI OLE SIIHEN RESURSSEJÄ.
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private boolean validatePassword(String givenPass, String username) throws NoSuchAlgorithmException {
+    public boolean validatePassword(String givenPass, String username) throws NoSuchAlgorithmException {
         JSONParser parser = new JSONParser();
-        JSONObject jsonObject = null;
+        JSONObject jsonObject;
 
         try {
-            AssetFileDescriptor descriptor = context.getAssets().openFd("database.json");
-
             JSONArray array = (JSONArray) parser.parse(new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"database.json")));
 
 
             for(int i = 0; i < array.size(); i++){
                 jsonObject = (JSONObject) array.get(i);
                 String name = (String) jsonObject.get("username");
-                System.out.print(name+"\n");
+                System.out.print("Searching for: " + name + " with password: " + givenPass + "\n");
                 if(name.equals(username)){
-                    System.out.print("a\n");
+                    System.out.print("Username found\n");
                     String hash = (String) jsonObject.get("hash");
                     String salt = (String) jsonObject.get("salt");
 
                     byte[] salt2 = Base64.getDecoder().decode(salt);
-                    String b = get_SHA_256_SecurePassword(givenPass, salt2, "", true);
-                    System.out.print(salt2+"-------------");
-                    System.out.println(hash);
+                    String b = getPass(givenPass, salt2, "", true);
+                    System.out.println(salt2+"-------------"+hash);
                     System.out.println(b);
-                    if (get_SHA_256_SecurePassword(givenPass, salt2, "", true).equals(hash)) {
-                        System.out.print("VITTU");
-                        //System.out.println(name);
+                    if (getPass(givenPass, salt2, "", true).equals(hash)) {
+                        System.out.print("Password Correct.");
+                        return true;
                     }
                 }
 
@@ -185,7 +191,9 @@ public class UserData extends MainActivity{
         }
 
 
-        return true;
+        return false;
     }
+
+
 
 }
