@@ -13,13 +13,18 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -28,7 +33,7 @@ import java.util.Base64;
 
 
 public class UserData extends MainActivity{
-    private static FileWriter file;
+    private static OutputStreamWriter file;
     private Context context;
 
     public UserData(Context context) {
@@ -50,7 +55,14 @@ public class UserData extends MainActivity{
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private String get_SHA_256_SecurePassword(String passwordToHash, byte[] salt, String username, boolean cym) {
-
+        File asset = new File(context.getFilesDir().getPath()+"database.json");
+        if(!asset.exists()){
+            try {
+                copydatabase();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         String generatedPassword = null;
         try {
             JSONObject obj = new JSONObject();
@@ -74,12 +86,17 @@ public class UserData extends MainActivity{
                     JSONParser parser = new JSONParser();
 
                     AssetFileDescriptor descriptor = context.getAssets().openFd("database.json");
-                    System.out.println(new FileReader(descriptor.getFileDescriptor()));
-                    JSONArray list = (JSONArray) parser.parse(new InputStreamReader(new FileInputStream(descriptor.getFileDescriptor())));
+
+                    BufferedReader br = new BufferedReader (new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"database.json")));
+                    String line;
+                    while((line = br.readLine()) != null){
+                        System.out.println(line);
+                    }
+                    JSONArray list = (JSONArray) parser.parse(new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"database.json")));
                     System.out.println(list);
                     list.add(obj);
                     //System.out.println(list);
-                    file = new FileWriter(descriptor.getFileDescriptor());
+                    file = new OutputStreamWriter(new FileOutputStream(context.getFilesDir().getPath()+"database.json"));
                     file.write(list.toJSONString());
                     file.flush();
                     file.close();
@@ -101,6 +118,23 @@ public class UserData extends MainActivity{
         return generatedPassword;
     }
 
+    public void copydatabase() throws IOException {
+         final String path = context.getFilesDir().getPath();
+         final String Name = "database.json";
+
+        OutputStream myOutput = new FileOutputStream(path + Name);
+        byte[] buffer = new byte[1024];
+        int length;
+        InputStream myInput = context.getAssets().open("database.json");
+        while ((length = myInput.read(buffer)) > 0) {
+            myOutput.write(buffer, 0, length);
+        }
+        myInput.close();
+        myOutput.flush();
+        myOutput.close();
+
+    }
+
     // Add salt
     private static byte[] getSalt() throws NoSuchAlgorithmException {
         SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
@@ -118,7 +152,7 @@ public class UserData extends MainActivity{
         try {
             AssetFileDescriptor descriptor = context.getAssets().openFd("database.json");
 
-            JSONArray array = (JSONArray) parser.parse(new FileReader(descriptor.getFileDescriptor()));
+            JSONArray array = (JSONArray) parser.parse(new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"database.json")));
 
 
             for(int i = 0; i < array.size(); i++){
@@ -134,6 +168,7 @@ public class UserData extends MainActivity{
                     String b = get_SHA_256_SecurePassword(givenPass, salt2, "", true);
                     System.out.print(salt2+"-------------");
                     System.out.println(hash);
+                    System.out.println(b);
                     if (get_SHA_256_SecurePassword(givenPass, salt2, "", true).equals(hash)) {
                         System.out.print("VITTU");
                         //System.out.println(name);
