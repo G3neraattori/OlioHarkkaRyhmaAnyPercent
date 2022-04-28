@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="7dp"
         android:layout_marginBottom="19dp"
-        android:text="fragment3"
+        android:text="Käyttäjä"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
