@@ -2,9 +2,7 @@ package com.example.olioharkkaryhmaanypercent;
 
 //import org.json.JSONObject;
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
 import android.os.Build;
-import android.os.Environment;
 
 import androidx.annotation.RequiresApi;
 
@@ -18,14 +16,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -35,19 +30,11 @@ import java.util.Base64;
 public class UserData extends MainActivity{
     private static OutputStreamWriter file;
     private Context context;
+//    public USER user;
 
     public UserData(Context context) {
         this.context = context;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void main() throws NoSuchAlgorithmException {
-        /*String passwordToHash = "password";
-        byte[] salt = getSalt();
-
-        String securePassword = getPass(passwordToHash, salt, "AA", false);
-        validatePassword("password", "AA");
-        validatePassword("1234", "AA");*/
+        //this.user = new USER(this.context);
 
     }
 
@@ -194,6 +181,54 @@ public class UserData extends MainActivity{
         return false;
     }
 
+    public boolean getUser(String username){
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject;
+
+        try {
+            JSONArray array = (JSONArray) parser.parse(new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"database.json")));
+
+
+            for(int i = 0; i < array.size(); i++){
+                jsonObject = (JSONObject) array.get(i);
+                String name = (String) jsonObject.get("username");
+                System.out.println("Searching for: " + username);
+                if(name.equals(username)){
+                    System.out.print("Username found\n");
+                    return true;
+                }
+
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Searching for: " + username);
+
+        return false;
+    }
+
+    public void saveMovie(String username){
+
+    }
+
+    /*public class USER extends UserData{
+        boolean newUser;
+        String username;
+
+        public USER(Context context) {
+            super(context);
+        }
+
+        public void setStatus(boolean status){
+            this.newUser = status;
+        }
+
+    }*/
 
 
 }
