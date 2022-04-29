@@ -65,11 +65,13 @@ public class Fragment3 extends Fragment {
         if(!user.getUser(name)){
             user.createUser(name, pass);
 //            user.user.setStatus(true);
+            user.loadUserData(name);
         }else{
             if(user.validatePassword(name, pass)){
                 Fragment fragment = new Fragment4();
                 FragmentManager fragmentManager = getParentFragmentManager();
                 fragmentManager.beginTransaction().add(R.id.fragment3, fragment).remove(this).commit();
+                user.loadUserData(name);
             }else{
                 text.setText("Väärä salasana tai käyttäjänimi.");
             }

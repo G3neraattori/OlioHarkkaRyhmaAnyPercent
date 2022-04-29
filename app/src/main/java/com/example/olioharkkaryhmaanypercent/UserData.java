@@ -137,7 +137,6 @@ public class UserData extends MainActivity{
         return salt;
     }
 
-
     //Returnaa TRUE jos löytyi käyttäjä false jos ei
     //TALLENTAA VAIN PUHELIMEEN PITÄISI MUUTTAA TALLENTAMAAN PALVELIMELLE MUTTA MEILLÄ EI OLE SIIHEN RESURSSEJÄ.
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -212,7 +211,57 @@ public class UserData extends MainActivity{
         return false;
     }
 
+    //lataa käyttäjädatan. tämäkin olisi normaalisti palvelimella mutta enemmän proof on concept
+    public void loadUserData(String username){
+        File asset = new File(context.getFilesDir().getPath()+"userdata.json");
+        //Ensimmäisellä asennuksella kopio userdata.json assettin
+        if(!asset.exists()){
+            try {
+                final String path = context.getFilesDir().getPath();
+                final String Name = "userdata"+username+".json";
+
+                OutputStream os = new FileOutputStream(path + Name);
+                byte[] buffer = new byte[1024];
+                int length;
+                InputStream is = context.getAssets().open("userdata.json");
+                while ((length = is.read(buffer)) > 0) {
+                    os.write(buffer, 0, length);
+                }
+                is.close();
+                os.flush();
+                os.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //TODO tarvitsee sen miten data esitetetään käyttäjäsivulla. Luultavasti parsee jsonista kaiken siihhen sivulle kivasti
+    }
+
     public void saveMovie(String username){
+        JSONObject obj = new JSONObject();
+        try{
+            JSONParser parser = new JSONParser();
+
+            BufferedReader br = new BufferedReader (new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"database.json")));
+            String line;
+            while((line = br.readLine()) != null){
+                System.out.println(line);
+            }
+            JSONArray list = (JSONArray) parser.parse(new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"database.json")));
+            obj.put("leffa", "leffa");
+            obj.put("dataa", "dataa");
+            list.add(obj);
+            file = new OutputStreamWriter(new FileOutputStream(context.getFilesDir().getPath()+"database.json"));
+            file.write(list.toJSONString());
+            file.flush();
+            file.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace(); }
+
 
     }
 
