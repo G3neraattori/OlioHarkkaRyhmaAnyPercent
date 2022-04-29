@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import org.w3c.dom.Text;
 
@@ -65,7 +67,9 @@ public class Fragment3 extends Fragment {
 //            user.user.setStatus(true);
         }else{
             if(user.validatePassword(name, pass)){
-
+                Fragment fragment = new Fragment4();
+                FragmentManager fragmentManager = getParentFragmentManager();
+                fragmentManager.beginTransaction().add(R.id.fragment3, fragment).remove(this).commit();
             }else{
                 text.setText("Väärä salasana tai käyttäjänimi.");
             }

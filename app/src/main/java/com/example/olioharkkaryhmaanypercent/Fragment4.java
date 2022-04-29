@@ -17,11 +17,7 @@ import androidx.fragment.app.Fragment;
 import java.security.NoSuchAlgorithmException;
 
 public class Fragment4 extends Fragment {
-
     View view;
-    EditText username;
-    EditText salari;
-    TextView text;
 
     @Nullable
     @Override
@@ -32,45 +28,13 @@ public class Fragment4 extends Fragment {
         return view;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        UserData user = new UserData(requireContext());
-        username = (EditText) getView().findViewById(R.id.username);
-        salari = (EditText) getView().findViewById(R.id.salari);
-        text = (TextView) getView().findViewById(R.id.textView2);
-        Button mButton = (Button) view.findViewById(R.id.kirjautumisNappi);
-
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    login(user);
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void login(UserData user) throws NoSuchAlgorithmException {
-        String name = String.valueOf(username.getText());
-        String pass = String.valueOf(salari.getText());
-        if(!user.getUser(name)){
-            user.createUser(name, pass);
-//            user.user.setStatus(true);
-        }else{
-            if(user.validatePassword(name, pass)){
-
-            }else{
-                text.setText("Väärä salasana tai käyttäjänimi.");
-            }
-  //          user.user.setStatus(false);
-        }
 
     }
+
+
 
 
 

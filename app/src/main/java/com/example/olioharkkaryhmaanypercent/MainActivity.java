@@ -68,12 +68,9 @@ public class MainActivity extends AppCompatActivity {
                 } else if (view == findViewById(R.id.button2)) {
                     System.out.println("Fragment 2");
                     fragment = new Fragment2();
-                } else if (view == findViewById(R.id.button3)){
+                } else{
                     System.out.println("Fragment 3");
                     fragment = new Fragment3();
-                }else {
-                    System.out.println("Fragment 4");
-                    fragment = new Fragment4();
                 }
 
                 FragmentManager manager = getSupportFragmentManager();
