@@ -1,23 +1,19 @@
 package com.example.olioharkkaryhmaanypercent;
 
-import android.content.res.AssetFileDescriptor;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toolbar;
-import android.content.Context;
 
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
-import com.google.android.material.navigation.NavigationView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,7 +29,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,41 +37,40 @@ import java.util.HashMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-// Luokkarakenne melkein ok, ei tallenna actoreita oikein / niitä ei voi getata oikein en tiiä :D
-// Date ja Time ilmeisesti deprecated, pitää korjata
 
 public class MainActivity extends AppCompatActivity {
-
-
+    public static MovieManager movieManager;
+    Context context = this;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        movieManager = new MovieManager();
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Fragment fragment;
-
 
                 if (view == findViewById(R.id.button1)) {
                     System.out.println("Fragment 1");
                     fragment = new Fragment1();
                 } else if (view == findViewById(R.id.button2)) {
                     System.out.println("Fragment 2");
+                    movieManager.generateMovieList();
                     fragment = new Fragment2();
+
                 } else{
                     System.out.println("Fragment 3");
                     fragment = new Fragment3();
                 }
-
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.replace(R.id.fragmentWindow, fragment);
                 transaction.commit();
+
             }
         };
 
@@ -87,17 +81,12 @@ public class MainActivity extends AppCompatActivity {
         Button btn3 = findViewById(R.id.button3);
         btn3.setOnClickListener(listener);
 
-
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        MovieManager movieManager = new MovieManager();
-
         // For testing class construction
-        movieManager.generateMovieList();
-        movieManager.generateEntryList();
-        //movieManager.getDataFromImdb();
-        movieManager.printEntries();
+
     }
+
 
 
     public class MovieManager {   // MovieManager class contains the list for all movie entries
@@ -108,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
             this.entryList = new ArrayList<>();
             this.movieList = new HashMap<>();
         }
+        public MovieManager getMovieManager() { return this;}
 
         public HashMap<String, Movie> getMovieList() {
             return this.movieList;
@@ -268,7 +258,6 @@ public class MainActivity extends AppCompatActivity {
                 this.lengthInMin = lengthInMin;
 
             }
-
             private int movieID;
             private Date entryDate;
             private Time entryTime;
@@ -295,94 +284,6 @@ public class MainActivity extends AppCompatActivity {
             private Movie getEntryMovie(MovieManager movieManager) {
                 return movieManager.getMovieList().get(Integer.toString(this.movieID));
             }
-        }
-
-        public class Movie {   // Movie class contains information on one unique movie
-            // Constructor with parameters for movie info
-            public Movie(String movieName, int movieID, String movieDescription, String originalName, Cast movieCast, int movieLength, int movieYear, String imageurl) {
-                this.movieName = movieName;
-                this.originalName = originalName;
-                this.movieID = movieID;
-                this.movieDescription = movieDescription;
-                this.movieCast = movieCast;
-                this.movieLength = movieLength;
-                this.movieYear = movieYear;
-                this.imdbRating = 0.0;
-                this.imageurl = imageurl;
-            }
-
-            private String getMovieName() {
-                return this.movieName;
-            }
-
-            private String getOriginalName() {
-                return this.originalName;
-            }
-
-            private int getMovieID() {
-                return this.movieID;
-            }
-
-            private String getMovieDescription() {
-                return this.movieDescription;
-            }
-
-            private Cast getMovieCast() {
-                return this.movieCast;
-            }
-
-            private int getMovieLength() {
-                return this.movieLength;
-            }
-
-            private int getMovieYear() {
-                return this.movieYear;
-            }
-
-            private double getImdbRating() {
-                return this.imdbRating;
-            }
-
-            private String getImageurl() { return this.imageurl; }
-
-            private void setMovieName(String movieName) {
-                this.movieName = movieName;
-            }
-
-            private void setMovieID(int movieID) {
-                this.movieID = movieID;
-            }
-
-            private void setMovieDescription(String movieDescription) {
-                this.movieName = movieDescription;
-            }
-
-            private void setMovieCast(Cast movieCast) {
-                this.movieCast = movieCast;
-            }
-
-            private void setMovieLength(int movieLength) {
-                this.movieLength = movieLength;
-            }
-
-            private void setImdbRating(double imdbRating) {
-                this.imdbRating = imdbRating;
-            }
-
-            private void setOriginalName(String originalName) {
-                this.originalName = originalName;
-            }
-            private void setImageurl(String imageurl) { this.imageurl = imageurl; }
-
-            private String movieName;
-            private int movieID;
-            private String movieDescription;
-            private int movieLength;
-            private Cast movieCast;
-            private int movieYear;
-            private double imdbRating;
-            private String originalName;
-            private String imageurl;
         }
 
         public class Cast {     // Cast class contains a movie's director and actors

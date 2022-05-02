@@ -38,14 +38,14 @@
 
     <FrameLayout
         android:id="@+id/fragmentWindow"
-        android:layout_width="411dp"
-        android:layout_height="662dp"
+        android:layout_width="412dp"
+        android:layout_height="548dp"
+        app:layout_constraintBottom_toTopOf="@+id/button2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </FrameLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.698" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

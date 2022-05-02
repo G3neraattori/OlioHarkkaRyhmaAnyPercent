@@ -1,5 +1,6 @@
 package com.example.olioharkkaryhmaanypercent;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +10,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.app.AppCompatActivity;
 
-public class Fragment2 extends Fragment{
+
+public class Fragment2 extends Fragment {
 
     View view;
 
@@ -18,13 +24,16 @@ public class Fragment2 extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_fragment2, container, false);
+        View view = inflater.inflate(R.layout.fragment_fragment2, container, false);
         return view;
     }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        TextView text = this.view.findViewById(R.id.text2);
-        text.setText("MOIKKA");
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.movieRecyclerView);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(MainActivity.movieManager.getMovieList().values().toArray(new Movie[0]));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
     }
 
 
