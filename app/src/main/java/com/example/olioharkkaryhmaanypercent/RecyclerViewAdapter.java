@@ -1,5 +1,6 @@
 package com.example.olioharkkaryhmaanypercent;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,12 +8,18 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
     private Object[] moviearray;
+    private Fragment2 fragment;
     // RecyclerView recyclerView;
-    public RecyclerViewAdapter(Object[] moviearray) {
+    public RecyclerViewAdapter(Object[] moviearray, Fragment2 fragment) {
+        this.fragment = fragment;
         this.moviearray = moviearray;
     }
     // RecyclerView Layout Set
@@ -25,14 +32,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
     // RecyclerView Set Text And Image Or Click
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Movie movie = (Movie)moviearray[position];
         holder.textView.setText(movie.getMovieName());
         //holder.imageView.setImageResource(listdata[position].getImgId());
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(view.getContext(),"click on item: ", Toast.LENGTH_LONG).show();
+                System.out.println(position);
+                fragment.onMovieClick(view, position);
             }
         });
     }

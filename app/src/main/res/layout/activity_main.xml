@@ -38,8 +38,8 @@
 
     <FrameLayout
         android:id="@+id/fragmentWindow"
-        android:layout_width="412dp"
-        android:layout_height="548dp"
+        android:layout_width="413dp"
+        android:layout_height="601dp"
         app:layout_constraintBottom_toTopOf="@+id/button2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

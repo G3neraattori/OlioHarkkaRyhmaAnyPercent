@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("Fragment 2");
                     movieManager.generateMovieList();
                     fragment = new Fragment2();
-
                 } else{
                     System.out.println("Fragment 3");
                     fragment = new Fragment3();
@@ -84,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         // For testing class construction
-
     }
 
 

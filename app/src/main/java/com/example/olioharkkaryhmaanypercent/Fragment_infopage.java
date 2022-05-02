@@ -1,0 +1,37 @@
+package com.example.olioharkkaryhmaanypercent;
+
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+public class Fragment_infopage extends Fragment {
+    public int position;
+    View view;
+
+    public void setPosition(int position) { this.position = position; }
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_infopage, container, false);
+        return view;
+    }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        TextView movie_info_name = (TextView) view.findViewById(R.id.movie_info_name);
+        Movie[] movielist = MainActivity.movieManager.getMovieList().values().toArray(new Movie[0]);
+        Movie movie = movielist[3];
+        movie_info_name.setText(movie.getMovieName());
+        System.out.println("onviewcreated");
+    }
+}
