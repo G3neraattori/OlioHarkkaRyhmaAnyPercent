@@ -24,14 +24,19 @@ public class Fragment_infopage extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_infopage, container, false);
+        //TextView movie_info_name = (TextView) view.findViewById(R.id.movie_info_name);
         return view;
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         TextView movie_info_name = (TextView) view.findViewById(R.id.movie_info_name);
+        TextView movie_info_description = (TextView) view.findViewById(R.id.movie_info_description);
+        TextView movie_info_year = (TextView) view.findViewById(R.id.movie_info_year);
         Movie[] movielist = MainActivity.movieManager.getMovieList().values().toArray(new Movie[0]);
         Movie movie = movielist[3];
         movie_info_name.setText(movie.getMovieName());
+        movie_info_description.setText(movie.getMovieDescription());
+        movie_info_year.setText(Integer.toString(movie.getMovieYear()));
         System.out.println("onviewcreated");
     }
 }

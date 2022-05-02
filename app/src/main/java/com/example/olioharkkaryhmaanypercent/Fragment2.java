@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,8 +37,10 @@ public class Fragment2 extends Fragment {
     public void onMovieClick(@NonNull View view, int position) {
         Fragment fragment = new Fragment_infopage();
         FragmentManager fragmentManager = getParentFragmentManager();
-        fragmentManager.beginTransaction().add(R.id.fragment_fragment2, fragment).remove(this).commit();
-    }
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragmentWindow, fragment);
+        transaction.commit();
 
+    }
 
 }

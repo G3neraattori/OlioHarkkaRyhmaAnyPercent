@@ -4,42 +4,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/fragment_infopage1"
+    android:id="@+id/fragment_infopage"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/fragment_infopage_constraint">
+        android:layout_height="match_parent">
 
-
-        <ImageView
-            android:id="@+id/movie_info_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <TextView
+            android:id="@+id/movie_info_name"
+            android:layout_width="198dp"
+            android:layout_height="43dp"
+            android:layout_marginTop="4dp"
+            android:text="TextView"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/imageView3"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/movie_info_name"
-            android:layout_width="210dp"
-            android:layout_height="54dp"
-            android:text="TextView"
-            android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/movie_info_image"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
             android:id="@+id/movie_info_description"
-            android:layout_width="236dp"
-            android:layout_height="119dp"
+            android:layout_width="271dp"
+            android:layout_height="128dp"
             android:text="TextView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/movie_info_image"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/imageView3"
             app:layout_constraintTop_toBottomOf="@+id/movie_info_name" />
 
         <TextView
@@ -48,8 +47,7 @@
             android:layout_height="wrap_content"
             android:text="TextView"
             app:layout_constraintEnd_toStartOf="@+id/movie_info_description"
-            app:layout_constraintHorizontal_bias="0.342"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/movie_info_image" />
+            app:layout_constraintTop_toBottomOf="@+id/imageView3" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
