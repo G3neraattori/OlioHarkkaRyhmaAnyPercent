@@ -35,7 +35,8 @@ public class Fragment2 extends Fragment {
     }
 
     public void onMovieClick(@NonNull View view, int position) {
-        Fragment fragment = new Fragment_infopage();
+        Fragment_infopage fragment = new Fragment_infopage();
+        fragment.setPosition(position);
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragmentWindow, fragment);

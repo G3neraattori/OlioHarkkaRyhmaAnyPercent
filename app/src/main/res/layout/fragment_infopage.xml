@@ -13,41 +13,50 @@
 
         <TextView
             android:id="@+id/movie_info_name"
-            android:layout_width="198dp"
-            android:layout_height="43dp"
-            android:layout_marginTop="4dp"
+            android:layout_width="227dp"
+            android:layout_height="62dp"
             android:text="TextView"
-            android:textSize="20sp"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/imageView3"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toEndOf="@+id/movie_info_image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.07999998" />
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/movie_info_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/avatars" />
+            app:layout_constraintVertical_bias="0.100000024"
+            app:srcCompat="@drawable/ic_launcher_background"
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/movie_info_description"
-            android:layout_width="271dp"
-            android:layout_height="128dp"
+            android:layout_width="302dp"
+            android:layout_height="191dp"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbars="vertical"
             android:text="TextView"
+            android:verticalScrollbarPosition="right"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/imageView3"
+            app:layout_constraintStart_toEndOf="@+id/movie_info_image"
             app:layout_constraintTop_toBottomOf="@+id/movie_info_name" />
 
         <TextView
             android:id="@+id/movie_info_year"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="56dp"
+            android:layout_height="18dp"
             android:text="TextView"
             app:layout_constraintEnd_toStartOf="@+id/movie_info_description"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+            app:layout_constraintTop_toBottomOf="@+id/movie_info_image" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
