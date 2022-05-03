@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
                 if (jsonObject.getJSONArray("results").length() != 0) {
                     JSONObject results = jsonObject.getJSONArray("results").getJSONObject(0);
                     String ratingString = results.getString("imDbRating");
-                    if (ratingString.equals("")) {
+                    if (ratingString==null) {
                         return(0.0);
                     } else {
                         return(Double.parseDouble(ratingString));
@@ -263,7 +263,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return(0.0);
         }
-
         public class Entry { // each entry is fetched from Finkino xml and contains info on one
                             // showing of a movie
             public Entry(int movieID, String location, int lengthInMin, LocalDateTime entryDateTime) {
