@@ -1,11 +1,8 @@
 package com.example.olioharkkaryhmaanypercent;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +24,6 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.squareup.picasso.Picasso;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -38,18 +32,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 
 public class Fragment_infopage extends Fragment {
     public int position;
@@ -72,10 +54,10 @@ public class Fragment_infopage extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        TextView movie_info_name = view.findViewById(R.id.movie_info_name);
-        TextView movie_info_description = view.findViewById(R.id.movie_info_description);
-        TextView movie_info_year = view.findViewById(R.id.movie_info_year);
-        TextView movie_info_imdbrating = view.findViewById(R.id.movie_info_imdbrating);
+        TextView movie_info_name = view.findViewById(R.id.movie_userinfo_name);
+        TextView movie_info_description = view.findViewById(R.id.movie_userpage_fragment);
+        TextView movie_info_year = view.findViewById(R.id.movie_userpage_year);
+        TextView movie_info_imdbrating = view.findViewById(R.id.userpage_imdbrating);
         TextView movie_info_show_times = view.findViewById(R.id.movie_info_show_times);
         ImageView movie_info_image = view.findViewById(R.id.movie_info_image);
         MaterialCalendarView mCalendarView = (MaterialCalendarView) view.findViewById(R.id.movie_info_calendar);

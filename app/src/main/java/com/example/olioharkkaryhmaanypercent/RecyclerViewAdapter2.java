@@ -24,6 +24,7 @@ public class RecyclerViewAdapter2 extends RecyclerView.Adapter<RecyclerViewAdapt
     // RecyclerView Layout Set
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        this.moviearray = UserData.actuallyLoadUserData(MainActivity.userManager.getCurrentUser().getUsername()).values().toArray(new Movie[0]);
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View listItem= layoutInflater.inflate(R.layout.movie_item_view, parent, false);
         ViewHolder viewHolder = new ViewHolder(listItem);

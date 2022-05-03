@@ -3,6 +3,7 @@ package com.example.olioharkkaryhmaanypercent;
 //import org.json.JSONObject;
 import android.content.Context;
 import android.os.Build;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
@@ -45,6 +46,7 @@ public class UserData extends MainActivity{
     public boolean createUser(String username, String passwordToHash) throws NoSuchAlgorithmException {
         byte[] salt = getSalt();
         String generated = getPass(passwordToHash, salt, username, false);
+        Toast.makeText(context, "Käyttjänimeä, ei löytynyt. Luodaan uusi käyttäjä.", Toast.LENGTH_SHORT).show();
 
         return generated != null;
     }
@@ -155,7 +157,7 @@ public class UserData extends MainActivity{
                     System.out.println(salt2+"-------------"+hash);
                     System.out.println(b);
                     if (getPass(givenPass, salt2, "", true).equals(hash)) {
-                        System.out.println("Password Correct.");
+                        Toast.makeText(context, "Kirjauduttu sisään.", Toast.LENGTH_SHORT).show();
                         return true;
                     }
                 }

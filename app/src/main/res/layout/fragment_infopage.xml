@@ -13,7 +13,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/movie_info_name"
+            android:id="@+id/movie_userinfo_name"
             android:layout_width="216dp"
             android:layout_height="65dp"
             android:text="TextView"
@@ -38,7 +38,7 @@
             tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/movie_info_description"
+            android:id="@+id/movie_userpage_fragment"
             android:layout_width="302dp"
             android:layout_height="191dp"
             android:scrollbarAlwaysDrawVerticalTrack="true"
@@ -50,14 +50,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/movie_info_image"
-            app:layout_constraintTop_toBottomOf="@+id/movie_info_name" />
+            app:layout_constraintTop_toBottomOf="@+id/movie_userinfo_name" />
 
         <TextView
-            android:id="@+id/movie_info_year"
+            android:id="@+id/movie_userpage_year"
             android:layout_width="56dp"
             android:layout_height="18dp"
             android:text="TextView"
-            app:layout_constraintEnd_toStartOf="@+id/movie_info_description"
+            app:layout_constraintEnd_toStartOf="@+id/movie_userpage_fragment"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/movie_info_image" />
 
@@ -69,7 +69,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:mcv_selectionMode="single"
-            app:layout_constraintTop_toBottomOf="@+id/movie_info_description"
+            app:layout_constraintTop_toBottomOf="@+id/movie_userpage_fragment"
             app:mcv_selectionColor="#00F"
             app:mcv_showOtherDates="all" />
 
@@ -82,7 +82,7 @@
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/movie_info_calendar"
-            app:layout_constraintTop_toBottomOf="@+id/movie_info_description"
+            app:layout_constraintTop_toBottomOf="@+id/movie_userpage_fragment"
             tools:visibility="visible" />
 
         <TextView
@@ -101,9 +101,9 @@
             android:text="Tallenna suosikeihin"
             android:textSize="8sp"
             app:layout_constraintBottom_toTopOf="@+id/movie_info_calendar"
-            app:layout_constraintEnd_toStartOf="@+id/movie_info_description"
+            app:layout_constraintEnd_toStartOf="@+id/movie_userpage_fragment"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/movie_info_year"
+            app:layout_constraintTop_toBottomOf="@+id/movie_userpage_year"
             app:layout_constraintVertical_bias="0.0" />
 
         <Button
@@ -113,20 +113,20 @@
             android:text="Arvostele"
             android:textSize="9sp"
             app:layout_constraintBottom_toTopOf="@+id/movie_info_calendar"
-            app:layout_constraintEnd_toStartOf="@+id/movie_info_description"
+            app:layout_constraintEnd_toStartOf="@+id/movie_userpage_fragment"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/movie_info_favourite"
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/movie_info_imdbrating"
+            android:id="@+id/userpage_imdbrating"
             android:layout_width="90dp"
             android:layout_height="65dp"
             android:text="Imdb rating:\n\n0.0"
-            app:layout_constraintBottom_toTopOf="@+id/movie_info_description"
+            app:layout_constraintBottom_toTopOf="@+id/movie_userpage_fragment"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/movie_info_name" />
+            app:layout_constraintStart_toEndOf="@+id/movie_userinfo_name" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -53,7 +53,7 @@ public class Fragment_user_infopage extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_infopage, container, false);
+        view = inflater.inflate(R.layout.fragment_user_infopage, container, false);
         setLocation("");
         //TextView movie_info_name = (TextView) view.findViewById(R.id.movie_info_name);
         return view;
@@ -61,22 +61,18 @@ public class Fragment_user_infopage extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        TextView movie_info_name = view.findViewById(R.id.movie_info_name);
-        TextView movie_info_description = view.findViewById(R.id.movie_info_description);
-        TextView movie_info_year = view.findViewById(R.id.movie_info_year);
-        TextView movie_info_imdbrating = view.findViewById(R.id.movie_info_imdbrating);
+        TextView movie_info_name = view.findViewById(R.id.movie_userinfo_name);
+        TextView movie_info_description = view.findViewById(R.id.movie_userpage_fragment);
+        TextView movie_info_year = view.findViewById(R.id.movie_userpage_year);
         TextView movie_info_show_times = view.findViewById(R.id.movie_info_show_times);
+        TextView movie_imdbrating = view.findViewById(R.id.userpage_imdbrating);
         ImageView movie_info_image = view.findViewById(R.id.movie_info_image);
-        MaterialCalendarView mCalendarView = (MaterialCalendarView) view.findViewById(R.id.movie_info_calendar);
         Button rateButton = view.findViewById(R.id.movie_info_rate);
         Button favouriteButton = view.findViewById(R.id.movie_info_favourite);
-        Movie[] movielist = MainActivity.movieManager.getMovieList().values().toArray(new Movie[0]);
+        Movie[] movielist = UserData.actuallyLoadUserData(MainActivity.userManager.getCurrentUser().
+                getUsername()).values().toArray(new Movie[0]);
         Movie movie = movielist[position];
-        if (movie.getImdbRating()==0.0) {
-            movie_info_imdbrating.setText("Imdb rating:\n\n" + MainActivity.movieManager.getDataFromImdb(movie.getOriginalName()));
-        } else {
-            movie_info_imdbrating.setText("Imdb rating:\n\n" + movie.getImdbRating());
-        }
+        movie_imdbrating.setText("Imdb rating:\n\n" + movie.getImdbRating());
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,79 +98,9 @@ public class Fragment_user_infopage extends Fragment {
         favouriteButton.setOnClickListener(listener);
         String imageurl = movie.getImageurl();
         //Picture for url with picasso library
-        if (movie.getImageurl().trim().length() != 0) {
-            Picasso.get().load(imageurl).resize(200, 300).placeholder(R.drawable.ic_launcher_background).error(R.drawable.ic_launcher_background).into(movie_info_image);
-        }
-        String location = "";
-        Collection<LocalDateTime> dateTimes = MainActivity.movieManager.getMovieDates(movie.getMovieID(), location);
-        Collection<CalendarDay> days = new HashSet<CalendarDay>();
-        for (LocalDateTime e : dateTimes) {
-            days.add(CalendarDay.from(e.getYear(),e.getMonthValue(),e.getDayOfMonth()));
-        }
-        HashMap<String, String> spinnerTheaterList = MainActivity.movieManager.getSpinnerTheaterList();
-        List<String> spinnerTheaterList2 = new ArrayList<String>();
-        for (int i = 0; i < spinnerTheaterList.size();i++) {
-            spinnerTheaterList2.add(spinnerTheaterList.values().toArray()[i].toString());
-        }
-        List<String> spinnerTheaterList3 = spinnerTheaterList2.stream().sorted().collect(Collectors.toList());
-        ArrayAdapter customAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, spinnerTheaterList3);
-        Spinner spinner = view.findViewById(R.id.movie_info_spinner);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mCalendarView.removeDecorators();
-                setLocation(spinnerTheaterList3.get(position));
-                Collection<LocalDateTime> dateTimes = MainActivity.movieManager.getMovieDates(movie.getMovieID(), getLocation());
-                Collection<CalendarDay> days = new HashSet<CalendarDay>();
-                for (LocalDateTime e : dateTimes) {
-                    days.add(CalendarDay.from(e.getYear(),e.getMonthValue(),e.getDayOfMonth()));
-                }
-                EventDecorator decorator = new EventDecorator(Color.GREEN, days);
-                mCalendarView.addDecorator(decorator);
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-        OnDateSelectedListener dateListener = new OnDateSelectedListener() {
-            @Override
-            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-                HashSet<LocalTime> showTimes = MainActivity.movieManager.getMovieShowTimes(movie, date, getLocation());
-                String showTimeString = "Esitysajat:\n";
-                for (LocalTime time : showTimes) {
-                    showTimeString = showTimeString.concat(time.toString() + "\n");
-                }
-                movie_info_show_times.setText(showTimeString);
-            }
-        };
 
-        mCalendarView.setOnDateChangedListener(dateListener);
-        spinner.setAdapter(customAdapter);
-        EventDecorator decorator = new EventDecorator(Color.GREEN, days);
-        mCalendarView.addDecorator(decorator);
         movie_info_name.setText(movie.getMovieName());
         movie_info_description.setText(movie.getMovieDescription());
         movie_info_year.setText(Integer.toString(movie.getMovieYear()));
-        movie_info_imdbrating.setText("Imdb pisteet:\n\n" + MainActivity.movieManager.getDataFromImdb(movie.getOriginalName()));
-    }
-    public static Bitmap getBitmapFromURL(String src) {
-        try {
-
-            //uncomment below line in image name have spaces.
-            //src = src.replaceAll(" ", "%20");
-
-            URL url = new URL(src);
-
-            HttpURLConnection connection = (HttpURLConnection) url
-                    .openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (Exception e) {
-            Log.d("", e.toString());
-            return null;
-        }
     }
 }
