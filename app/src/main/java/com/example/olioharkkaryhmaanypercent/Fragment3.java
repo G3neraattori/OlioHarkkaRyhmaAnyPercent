@@ -70,17 +70,17 @@ public class Fragment3 extends Fragment {
         if(!user.getUser(name)){
             user.createUser(name, pass);
 //            user.user.setStatus(true);
-            //user.loadUserData(name);
+            user.loadUserData(name);
         }else{
-            if(user.validatePassword(name, pass)){
+            if(user.validatePassword(pass, name)){
                 MainActivity.userManager.currentUser = new UserData.USER(getContext());
                 MainActivity.userManager.setCurrentUser(name);
+                user.loadUserData(name);
                 Fragment fragment = new Fragment4();
                 FragmentManager fragmentManager = getParentFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.fragmentWindow, fragment);
                 fragmentTransaction.commit();
-                user.loadUserData(name);
             }else{
                 text.setText("Väärä salasana tai käyttäjänimi.");
             }

@@ -190,7 +190,7 @@ public class UserData extends MainActivity{
 
     //lataa käyttäjädatan. tämäkin olisi normaalisti palvelimella mutta enemmän proof on concept
     public void loadUserData(String username){
-        File asset = new File(context.getFilesDir().getPath()+"userdata.json");
+        File asset = new File(context.getFilesDir().getPath()+"userdata"+username+".json");
         //Ensimmäisellä asennuksella kopio userdata.json assettin
         if(!asset.exists()){
             try {
@@ -237,8 +237,8 @@ public class UserData extends MainActivity{
     }
     //, int personal_rating
     public static void saveMovie(USER user, Movie movie){
-        System.out.println(user.getUsername());
-        System.out.println(movie.getMovieName());
+        System.out.println("Username1:" + user.getUsername());
+        System.out.println("Moviename1: " + movie.getMovieName());
         JSONObject obj = new JSONObject();
         try{
             JSONParser parser = new JSONParser();
