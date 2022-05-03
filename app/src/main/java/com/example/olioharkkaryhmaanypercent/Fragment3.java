@@ -38,7 +38,7 @@ public class Fragment3 extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
+        super.onCreate(savedInstanceState);
         UserData user = new UserData(requireContext());
         username = (EditText) getView().findViewById(R.id.username);
         salari = (EditText) getView().findViewById(R.id.salari);
@@ -69,7 +69,9 @@ public class Fragment3 extends Fragment {
             if(user.validatePassword(name, pass)){
                 Fragment fragment = new Fragment4();
                 FragmentManager fragmentManager = getParentFragmentManager();
-                fragmentManager.beginTransaction().add(R.id.fragment3, fragment).remove(this).commit();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.fragmentWindow, fragment);
+                fragmentTransaction.commit();
                 user.loadUserData(name);
             }else{
                 text.setText("Väärä salasana tai käyttäjänimi.");
