@@ -238,10 +238,8 @@ public class MainActivity extends AppCompatActivity {
 
         public double getDataFromImdb(String movieName) {
             try {
-                String searchTerm = movieName;
-                DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-                String apiKey = "k_aaaaaaaa";
-                URL url = new URL("https://imdb-api.com/API/AdvancedSearch/" + apiKey + "/?title=" + searchTerm);
+                String apiKey = "k_gn414e7y";
+                URL url = new URL("https://imdb-api.com/API/AdvancedSearch/" + apiKey + "/?title=" + movieName);
                 HttpURLConnection connection;
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
@@ -261,9 +259,13 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject results = jsonObject.getJSONArray("results").getJSONObject(0);
                     String ratingString = results.getString("imDbRating");
                     System.out.println(ratingString);
-                    return(Double.parseDouble(ratingString));
+                    if (ratingString.equals("")) {
+                        return(0.0);
+                    } else {
+                        return(Double.parseDouble(ratingString));
+                    }
                 }
-            } catch (IOException | ParserConfigurationException | JSONException e) {
+            } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
             return(0.0);

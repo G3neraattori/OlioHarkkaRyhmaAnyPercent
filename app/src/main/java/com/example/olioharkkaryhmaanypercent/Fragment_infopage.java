@@ -79,10 +79,10 @@ public class Fragment_infopage extends Fragment {
             @Override
             public void onClick(View view) {
                 if (view == view.findViewById(R.id.movie_info_favourite)) {
-                    if (1==1/*loginStatus == 1*/) {
+                    if (MainActivity.userManager.currentUser==null) {
                         Toast.makeText(getContext(), "Kirjaudu sisään ensin, jotta voit tallentaa elokuvia suosikkeihin.", Toast.LENGTH_SHORT).show();
                     } else {
-                        //saveMovie(movie)
+                        UserData.saveMovie(MainActivity.userManager.currentUser,movie);
                         Toast.makeText(getContext(), "Elokuva tallennettu suosikeihin", Toast.LENGTH_SHORT).show();
                     }
                 } else if (view == view.findViewById(R.id.movie_info_rate)) {
@@ -98,7 +98,6 @@ public class Fragment_infopage extends Fragment {
         };
         rateButton.setOnClickListener(listener);
         favouriteButton.setOnClickListener(listener);
-
 
         String imageurl = movie.getImageurl();
         System.out.println(imageurl);
@@ -142,6 +141,7 @@ public class Fragment_infopage extends Fragment {
         movie_info_name.setText(movie.getMovieName());
         movie_info_description.setText(movie.getMovieDescription());
         movie_info_year.setText(Integer.toString(movie.getMovieYear()));
+        movie_info_imdbrating.setText("Imdb pisteet:\n\n" + MainActivity.movieManager.getDataFromImdb(movie.getOriginalName()));
     }
     public static Bitmap getBitmapFromURL(String src) {
         try {

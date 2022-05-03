@@ -29,7 +29,7 @@ import java.util.Base64;
 
 public class UserData extends MainActivity{
     private static OutputStreamWriter file;
-    private Context context;
+    private static Context context;
 //    public USER user;
 
     public UserData(Context context) {
@@ -94,9 +94,7 @@ public class UserData extends MainActivity{
                     file.write(list.toJSONString());
                     file.flush();
                     file.close();
-                }catch (IOException e){
-                    e.printStackTrace();
-                } catch (ParseException e) {
+                }catch (IOException | ParseException e){
                     e.printStackTrace();
                 }
 
@@ -232,14 +230,13 @@ public class UserData extends MainActivity{
             file.write(list.toJSONString());
             file.flush();
             file.close();
-        }catch (IOException e){
+        }catch (IOException | ParseException e){
             e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace(); }
+        }
 
     }
     //, int personal_rating
-    public void saveMovie(USER user, Movie movie){
+    public static void saveMovie(USER user, Movie movie){
         JSONObject obj = new JSONObject();
         try{
             JSONParser parser = new JSONParser();
@@ -268,8 +265,6 @@ public class UserData extends MainActivity{
         }catch (IOException | ParseException e){
             e.printStackTrace();
         }
-
-
     }
 
     public static class USER extends UserData{
