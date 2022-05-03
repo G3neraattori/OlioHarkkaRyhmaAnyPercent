@@ -237,6 +237,8 @@ public class UserData extends MainActivity{
     }
     //, int personal_rating
     public static void saveMovie(USER user, Movie movie){
+        System.out.println(user.getUsername());
+        System.out.println(movie.getMovieName());
         JSONObject obj = new JSONObject();
         try{
             JSONParser parser = new JSONParser();
@@ -258,7 +260,7 @@ public class UserData extends MainActivity{
             movieObj.put("Movie", obj);
             list.add(movieObj);
 
-            file = new OutputStreamWriter(new FileOutputStream(context.getFilesDir().getPath()+"database.json"));
+            file = new OutputStreamWriter(new FileOutputStream(context.getFilesDir().getPath()+"userdata"+user.getUsername()+".json"));
             file.write(list.toJSONString());
             file.flush();
             file.close();
