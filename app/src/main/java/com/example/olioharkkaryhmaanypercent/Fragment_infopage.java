@@ -105,8 +105,9 @@ public class Fragment_infopage extends Fragment {
         System.out.println(imageurl);
 
         //Picture for url with picasso library
-        Picasso.get().load(imageurl).resize(200,300).placeholder(R.drawable.ic_launcher_background).error(R.drawable.ic_launcher_background).into(movie_info_image);
-
+        if (movie.getImageurl().trim().length() != 0) {
+            Picasso.get().load(imageurl).resize(200, 300).placeholder(R.drawable.ic_launcher_background).error(R.drawable.ic_launcher_background).into(movie_info_image);
+        }
         String location = "";
         Collection<LocalDateTime> dateTimes = MainActivity.movieManager.getMovieDates(movie.getMovieID(), location);
         Collection<CalendarDay> days = new HashSet<CalendarDay>();
