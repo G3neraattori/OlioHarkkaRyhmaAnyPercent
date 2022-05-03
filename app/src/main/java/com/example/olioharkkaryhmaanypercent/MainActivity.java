@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         movieManager = new MovieManager();
         userManager = new UserManager();
         movieManager.generateMovieList();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentWindow, new Fragment2()).commit();
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
