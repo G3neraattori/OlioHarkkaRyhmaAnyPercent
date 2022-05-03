@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -50,32 +49,6 @@ public class Fragment_user_infopage extends Fragment {
         Movie movie = movielist[position];
         System.out.println(movie.getPersonalRating() + " personasldnalskdjn ");
         movie_personalrating.setText("Oma arvostelu:\n\n" + movie.getPersonalRating());
-        View.OnClickListener listener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (view == view.findViewById(R.id.movie_info_favourite)) {
-                    if (MainActivity.userManager.currentUser==null) {
-                        Toast.makeText(getContext(), "Kirjaudu sisään ensin, jotta voit tallentaa elokuvia suosikkeihin.", Toast.LENGTH_SHORT).show();
-                    } else {
-                        UserData.saveMovie(MainActivity.userManager.currentUser,movie);
-                        Toast.makeText(getContext(), "Elokuva tallennettu suosikeihin", Toast.LENGTH_SHORT).show();
-                    }
-                } else if (view == view.findViewById(R.id.movie_info_rate)) {
-                    if (MainActivity.userManager.currentUser==null) {
-                        UserData user = new UserData(requireContext());
-                        Toast.makeText(getContext(), "Tallenna elokuva ennen arvostelua.", Toast.LENGTH_SHORT).show();
-
-                    } else {
-                        //rateMovie(movie, personalRating)
-                        UserData user = new UserData(requireContext());
-                        user.saveReview(MainActivity.userManager.currentUser, movie, "Coda - Kahden maailman välissä", 5);
-                        Toast.makeText(getContext(), "Elokuva arvosteltu", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        };
-        rateButton.setOnClickListener(listener);
-        favouriteButton.setOnClickListener(listener);
         String imageurl = movie.getImageurl();
         movie_info_name.setText(movie.getMovieName());
         movie_info_description.setText(movie.getMovieDescription());
