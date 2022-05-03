@@ -23,6 +23,7 @@ public class Movie {   // Movie class contains information on one unique movie
     public int getMovieYear() { return this.movieYear; }
     public double getImdbRating() { return this.imdbRating; }
     public String getImageurl() { return this.imageurl; }
+    public int getPersonalRating() { return this.personalRating; }
 
     private void setMovieName(String movieName) { this.movieName = movieName; }
     private void setMovieID(int movieID) { this.movieID = movieID; }
@@ -32,6 +33,7 @@ public class Movie {   // Movie class contains information on one unique movie
     public void setImdbRating(double imdbRating) { this.imdbRating = imdbRating; }
     private void setOriginalName(String originalName) { this.originalName = originalName; }
     private void setImageurl(String imageurl) { this.imageurl = imageurl; }
+    public void setpersonalRating(int personalRating) { this.personalRating = personalRating; }
 
     private String movieName;
     private int movieID;
@@ -42,4 +44,5 @@ public class Movie {   // Movie class contains information on one unique movie
     private double imdbRating;
     private String originalName;
     private String imageurl;
+    private int personalRating;
 }

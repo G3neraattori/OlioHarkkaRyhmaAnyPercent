@@ -1,18 +1,22 @@
 package com.example.olioharkkaryhmaanypercent;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,6 +26,11 @@ import androidx.fragment.app.Fragment;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,10 +58,41 @@ public class Fragment_infopage extends Fragment {
         TextView movie_info_name = view.findViewById(R.id.movie_info_name);
         TextView movie_info_description = view.findViewById(R.id.movie_info_description);
         TextView movie_info_year = view.findViewById(R.id.movie_info_year);
+        TextView movie_info_imdbrating = view.findViewById(R.id.movie_info_imdbrating);
         ImageView movie_info_image = view.findViewById(R.id.movie_info_image);
         MaterialCalendarView mCalendarView = (MaterialCalendarView) view.findViewById(R.id.movie_info_calendar);
+        Button rateButton = view.findViewById(R.id.movie_info_rate);
+        Button favouriteButton = view.findViewById(R.id.movie_info_favourite);
         Movie[] movielist = MainActivity.movieManager.getMovieList().values().toArray(new Movie[0]);
         Movie movie = movielist[position];
+        movie_info_imdbrating.setText("Imdb rating:\n\n" + movie.getImdbRating());
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (view == view.findViewById(R.id.movie_info_favourite)) {
+                    if (1==1/*loginStatus == 1*/) {
+                        Toast.makeText(getContext(), "Kirjaudu sisään ensin, jotta voit tallentaa elokuvia suosikkeihin.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        //saveMovie(movie)
+                        Toast.makeText(getContext(), "Elokuva tallennettu suosikeihin", Toast.LENGTH_SHORT).show();
+                    }
+                } else if (view == view.findViewById(R.id.movie_info_rate)) {
+                    if (1==1/*movieIsFavourite==1*/) {
+                        UserData user = new UserData(requireContext());
+                        Toast.makeText(getContext(), "Tallenna elokuva ennen arvostelua.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        //rateMovie(movie, personalRating)
+                        Toast.makeText(getContext(), "Elokuva arvosteltu", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        };
+        rateButton.setOnClickListener(listener);
+        favouriteButton.setOnClickListener(listener);
+
+
+        String imageurl = movie.getImageurl();
+        System.out.println(imageurl);
         String location = "";
         Collection<LocalDateTime> dateTimes = MainActivity.movieManager.getMovieDates(movie.getMovieID(), location);
         Collection<CalendarDay> days = new HashSet<CalendarDay>();
@@ -93,5 +133,25 @@ public class Fragment_infopage extends Fragment {
         movie_info_name.setText(movie.getMovieName());
         movie_info_description.setText(movie.getMovieDescription());
         movie_info_year.setText(Integer.toString(movie.getMovieYear()));
+    }
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+
+            //uncomment below line in image name have spaces.
+            //src = src.replaceAll(" ", "%20");
+
+            URL url = new URL(src);
+
+            HttpURLConnection connection = (HttpURLConnection) url
+                    .openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (Exception e) {
+            Log.d("", e.toString());
+            return null;
+        }
     }
 }

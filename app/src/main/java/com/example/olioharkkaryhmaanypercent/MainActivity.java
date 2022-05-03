@@ -1,5 +1,6 @@
 package com.example.olioharkkaryhmaanypercent;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -54,13 +55,10 @@ public class MainActivity extends AppCompatActivity {
                 Fragment fragment;
 
                 if (view == findViewById(R.id.button1)) {
-                    System.out.println("Fragment 1");
                     fragment = new Fragment1();
                 } else if (view == findViewById(R.id.button2)) {
-                    System.out.println("Fragment 2");
                     fragment = new Fragment2();
                 } else{
-                    System.out.println("Fragment 3");
                     fragment = new Fragment3();
                 }
                 FragmentManager manager = getSupportFragmentManager();
@@ -243,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
                 if (jsonObject.getJSONArray("results").length() != 0) {
                     JSONObject results = jsonObject.getJSONArray("results").getJSONObject(0);
                     String ratingString = results.getString("imDbRating");
-                    System.out.println(ratingString + "Tää on se score");
+                    System.out.println(ratingString);
                     return(Double.parseDouble(ratingString));
                 }
             } catch (IOException | ParserConfigurationException | JSONException e) {
