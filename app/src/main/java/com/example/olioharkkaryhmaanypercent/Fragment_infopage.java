@@ -104,6 +104,7 @@ public class Fragment_infopage extends Fragment {
         String imageurl = movie.getImageurl();
         System.out.println(imageurl);
 
+        //Picture for url with picasso library
         Picasso.get().load(imageurl).resize(200,300).placeholder(R.drawable.ic_launcher_background).error(R.drawable.ic_launcher_background).into(movie_info_image);
 
         String location = "";
