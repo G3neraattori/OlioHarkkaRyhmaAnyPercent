@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.squareup.picasso.Picasso;
@@ -57,7 +58,7 @@ public class Fragment_infopage extends Fragment {
         TextView movie_info_name = view.findViewById(R.id.movie_userinfo_name);
         TextView movie_info_description = view.findViewById(R.id.movie_userpage_fragment);
         TextView movie_info_year = view.findViewById(R.id.movie_userpage_year);
-        TextView movie_info_imdbrating = view.findViewById(R.id.userpage_imdbrating);
+        TextView movie_info_imdbrating = view.findViewById(R.id.userpage_personalrating);
         TextView movie_info_show_times = view.findViewById(R.id.movie_info_show_times);
         ImageView movie_info_image = view.findViewById(R.id.movie_info_image);
         MaterialCalendarView mCalendarView = (MaterialCalendarView) view.findViewById(R.id.movie_info_calendar);
@@ -65,6 +66,36 @@ public class Fragment_infopage extends Fragment {
         Button favouriteButton = view.findViewById(R.id.movie_info_favourite);
         Movie[] movielist = MainActivity.movieManager.getMovieList().values().toArray(new Movie[0]);
         Movie movie = movielist[position];
+        int personalRating = movie.getPersonalRating();
+        FloatingActionButton star1 = view.findViewById(R.id.star1);
+        FloatingActionButton star2 = view.findViewById(R.id.star2);
+        FloatingActionButton star3 = view.findViewById(R.id.star3);
+        FloatingActionButton star4 = view.findViewById(R.id.star3);
+        FloatingActionButton star5 = view.findViewById(R.id.star5);
+        View.OnClickListener starListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int rating = 0;
+                if (view == view.findViewById(R.id.star1)) {
+                    rating = 1;
+                } else if (view == view.findViewById(R.id.star2)) {
+                    rating = 2;
+                } else if (view == view.findViewById(R.id.star3)) {
+                    rating = 3;
+                } else if (view == view.findViewById(R.id.star3)) {
+                    rating = 4;
+                } else if (view == view.findViewById(R.id.star5)) {
+                    rating = 5;
+                }
+                System.out.println(rating + "TÄä on se rating :D  ");
+                movie.setpersonalRating(rating);
+            }
+        };
+        star1.setOnClickListener(starListener);
+        star2.setOnClickListener(starListener);
+        star3.setOnClickListener(starListener);
+        star4.setOnClickListener(starListener);
+        star5.setOnClickListener(starListener);
         if (movie.getImdbRating()==0.0) {
             movie_info_imdbrating.setText("Imdb rating:\n\n" + MainActivity.movieManager.getDataFromImdb(movie.getOriginalName()));
         } else {
@@ -81,12 +112,12 @@ public class Fragment_infopage extends Fragment {
                         Toast.makeText(getContext(), "Elokuva tallennettu suosikeihin", Toast.LENGTH_SHORT).show();
                     }
                 } else if (view == view.findViewById(R.id.movie_info_rate)) {
-                    if (1==1/*movieIsFavourite==1*/) {
+                    if (MainActivity.userManager.getCurrentUser()!=null) {
+                        int personalRating = movie.getPersonalRating();
                         UserData user = new UserData(requireContext());
-                        Toast.makeText(getContext(), "Tallenna elokuva ennen arvostelua.", Toast.LENGTH_SHORT).show();
+                        user.saveReview(MainActivity.userManager.getCurrentUser(), movie, movie.getMovieName(), personalRating);
                     } else {
-                        //rateMovie(movie, personalRating)
-                        Toast.makeText(getContext(), "Elokuva arvosteltu", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Kirjaudu sisään ensin tallentaaksesi elokuvan arvostelun.", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

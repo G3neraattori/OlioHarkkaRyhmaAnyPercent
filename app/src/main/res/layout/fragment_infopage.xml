@@ -40,7 +40,7 @@
         <TextView
             android:id="@+id/movie_userpage_fragment"
             android:layout_width="302dp"
-            android:layout_height="191dp"
+            android:layout_height="100dp"
             android:scrollbarAlwaysDrawVerticalTrack="true"
             android:scrollbarStyle="insideOverlay"
             android:scrollbars="vertical"
@@ -65,12 +65,14 @@
             android:id="@+id/movie_info_calendar"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:mcv_selectionMode="single"
-            app:layout_constraintTop_toBottomOf="@+id/movie_userpage_fragment"
+            app:layout_constraintTop_toBottomOf="@+id/star2"
+            app:layout_constraintVertical_bias="0.04000002"
             app:mcv_selectionColor="#00F"
+            app:mcv_selectionMode="single"
             app:mcv_showOtherDates="all" />
 
         <Spinner
@@ -82,17 +84,20 @@
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/movie_info_calendar"
-            app:layout_constraintTop_toBottomOf="@+id/movie_userpage_fragment"
+            app:layout_constraintTop_toBottomOf="@+id/star3"
             tools:visibility="visible" />
 
         <TextView
             android:id="@+id/movie_info_show_times"
-            android:text="Esitysajat: "
             android:layout_width="162dp"
             android:layout_height="306dp"
+            android:text="Esitysajat: "
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/movie_info_calendar"
-            app:layout_constraintTop_toBottomOf="@+id/movie_info_spinner" />
+            app:layout_constraintTop_toBottomOf="@+id/movie_info_spinner"
+            app:layout_constraintVertical_bias="0.060000002" />
 
         <Button
             android:id="@+id/movie_info_favourite"
@@ -110,7 +115,7 @@
             android:id="@+id/movie_info_rate"
             android:layout_width="93dp"
             android:layout_height="47dp"
-            android:text="Arvostele"
+            android:text="Tallenna arvostelu"
             android:textSize="9sp"
             app:layout_constraintBottom_toTopOf="@+id/movie_info_calendar"
             app:layout_constraintEnd_toStartOf="@+id/movie_userpage_fragment"
@@ -119,14 +124,65 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/userpage_imdbrating"
-            android:layout_width="90dp"
-            android:layout_height="65dp"
+            android:id="@+id/userpage_personalrating"
+            android:layout_width="84dp"
+            android:layout_height="67dp"
             android:text="Imdb rating:\n\n0.0"
             app:layout_constraintBottom_toTopOf="@+id/movie_userpage_fragment"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/movie_userinfo_name" />
+            app:layout_constraintStart_toEndOf="@+id/movie_userinfo_name"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/star5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/movie_userpage_fragment"
+            app:srcCompat="@android:drawable/btn_star" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/star3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:layout_constraintEnd_toStartOf="@+id/star5"
+            app:layout_constraintStart_toEndOf="@+id/star3"
+            app:layout_constraintTop_toBottomOf="@+id/movie_userpage_fragment"
+            app:srcCompat="@android:drawable/btn_star" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/star3"
+            android:layout_width="56dp"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:layout_constraintEnd_toStartOf="@+id/star3"
+            app:layout_constraintStart_toEndOf="@+id/star2"
+            app:layout_constraintTop_toBottomOf="@+id/movie_userpage_fragment"
+            app:srcCompat="@android:drawable/btn_star" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/star2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:layout_constraintTop_toTopOf="@+id/star3"
+            app:srcCompat="@android:drawable/btn_star"
+            tools:layout_editor_absoluteX="187dp" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/star1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:layout_constraintEnd_toStartOf="@+id/star2"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/movie_info_rate"
+            app:srcCompat="@android:drawable/btn_star"
+            tools:layout_editor_absoluteY="216dp" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

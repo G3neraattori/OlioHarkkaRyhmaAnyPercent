@@ -2,7 +2,7 @@ package com.example.olioharkkaryhmaanypercent;
 
 public class Movie {   // Movie class contains information on one unique movie
     // Constructor with parameters for movie info
-    public Movie(String movieName, int movieID, String movieDescription, String originalName, MainActivity.MovieManager.Cast movieCast, int movieLength, int movieYear, String imageurl) {
+    public Movie(String movieName, int movieID, String movieDescription, String originalName, MainActivity.MovieManager.Cast movieCast, int movieLength, int movieYear, String imageurl, int personalRating) {
         this.movieName = movieName;
         this.originalName = originalName;
         this.movieID = movieID;
@@ -12,6 +12,7 @@ public class Movie {   // Movie class contains information on one unique movie
         this.movieYear = movieYear;
         this.imdbRating = 0.0;
         this.imageurl = imageurl;
+        this.personalRating = personalRating;
     }
 
     public String getMovieName() { return this.movieName; }

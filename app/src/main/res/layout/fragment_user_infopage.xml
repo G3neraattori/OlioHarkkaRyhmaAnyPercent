@@ -82,10 +82,11 @@
             app:layout_constraintTop_toBottomOf="@+id/movie_info_favourite" />
 
         <TextView
-            android:id="@+id/userpage_imdbrating"
+            android:id="@+id/userpage_personalrating"
             android:layout_width="90dp"
             android:layout_height="65dp"
-            android:text="Imdb rating:\n\n0.0"
+            android:text="personalRating:\n\n0.0"
+            android:textSize="10sp"
             app:layout_constraintBottom_toTopOf="@+id/movie_userpage_fragment"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"

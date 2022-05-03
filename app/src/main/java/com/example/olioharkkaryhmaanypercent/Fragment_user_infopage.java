@@ -1,19 +1,12 @@
 package com.example.olioharkkaryhmaanypercent;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,23 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-
-import com.prolificinteractive.materialcalendarview.CalendarDay;
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
-import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
-import com.squareup.picasso.Picasso;
-
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class Fragment_user_infopage extends Fragment {
     public int position;
@@ -65,14 +41,15 @@ public class Fragment_user_infopage extends Fragment {
         TextView movie_info_description = view.findViewById(R.id.movie_userpage_fragment);
         TextView movie_info_year = view.findViewById(R.id.movie_userpage_year);
         TextView movie_info_show_times = view.findViewById(R.id.movie_info_show_times);
-        TextView movie_imdbrating = view.findViewById(R.id.userpage_imdbrating);
+        TextView movie_personalrating = view.findViewById(R.id.userpage_personalrating);
         ImageView movie_info_image = view.findViewById(R.id.movie_info_image);
         Button rateButton = view.findViewById(R.id.movie_info_rate);
         Button favouriteButton = view.findViewById(R.id.movie_info_favourite);
         Movie[] movielist = UserData.actuallyLoadUserData(MainActivity.userManager.getCurrentUser().
                 getUsername()).values().toArray(new Movie[0]);
         Movie movie = movielist[position];
-        movie_imdbrating.setText("Imdb rating:\n\n" + movie.getImdbRating());
+        System.out.println(movie.getPersonalRating() + " personasldnalskdjn ");
+        movie_personalrating.setText("Oma arvostelu:\n\n" + movie.getPersonalRating());
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,10 +77,10 @@ public class Fragment_user_infopage extends Fragment {
         rateButton.setOnClickListener(listener);
         favouriteButton.setOnClickListener(listener);
         String imageurl = movie.getImageurl();
-        //Picture for url with picasso library
-
+        //Picture for url with picasso library        movie_info_name.setText(movie.getMovieName());
         movie_info_name.setText(movie.getMovieName());
         movie_info_description.setText(movie.getMovieDescription());
         movie_info_year.setText(Integer.toString(movie.getMovieYear()));
+
     }
 }

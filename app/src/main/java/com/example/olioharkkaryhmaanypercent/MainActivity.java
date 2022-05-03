@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     }
-                    this.movieList.put(Integer.toString(movieID), new Movie(movieName, movieID, description, originalName, new Cast(director, (ArrayList<String>) actors.clone()), length, productionYear, imageurl));
+                    this.movieList.put(Integer.toString(movieID), new Movie(movieName, movieID, description, originalName, new Cast(director, (ArrayList<String>) actors.clone()), length, productionYear, imageurl, 0));
                     actors.clear();
                 }
             } catch (ParserConfigurationException | SAXException | IOException parserConfigurationException) {

@@ -235,7 +235,7 @@ public class UserData extends MainActivity{
                 movieObject = (JSONObject) jsonObject.get("Movie");
                 System.out.println(movieObject);
                 System.out.println(movieObject.get("name"));
-                movieList.put(movieObject.get("id").toString(), new Movie(movieObject.get("name").toString(), Integer.parseInt(movieObject.get("id").toString()), movieObject.get("description").toString(), "", null, 0, Integer.parseInt(movieObject.get("year").toString()), "") );
+                movieList.put(movieObject.get("id").toString(), new Movie(movieObject.get("name").toString(), Integer.parseInt(movieObject.get("id").toString()), movieObject.get("description").toString(), "", null, 0, Integer.parseInt(movieObject.get("year").toString()), "", Integer.parseInt(movieObject.get("personal").toString())));
                 System.out.println(movieObject.get("name").toString());
 
             }
@@ -329,10 +329,6 @@ public class UserData extends MainActivity{
                 }
 
             }
-
-
-
-
             file = new OutputStreamWriter(new FileOutputStream(context.getFilesDir().getPath()+"userdata"+user.getUsername()+".json"));
             file.write(list.toJSONString());
             file.flush();
