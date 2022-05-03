@@ -84,7 +84,7 @@
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/movie_info_calendar"
-            app:layout_constraintTop_toBottomOf="@+id/star3"
+            tools:layout_editor_absoluteY="272dp"
             tools:visibility="visible" />
 
         <TextView
@@ -145,12 +145,11 @@
             app:srcCompat="@android:drawable/btn_star" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/star3"
+            android:id="@+id/star4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
             app:layout_constraintEnd_toStartOf="@+id/star5"
-            app:layout_constraintStart_toEndOf="@+id/star3"
             app:layout_constraintTop_toBottomOf="@+id/movie_userpage_fragment"
             app:srcCompat="@android:drawable/btn_star" />
 
@@ -159,8 +158,7 @@
             android:layout_width="56dp"
             android:layout_height="wrap_content"
             android:clickable="true"
-            app:layout_constraintEnd_toStartOf="@+id/star3"
-            app:layout_constraintStart_toEndOf="@+id/star2"
+            app:layout_constraintEnd_toStartOf="@+id/star4"
             app:layout_constraintTop_toBottomOf="@+id/movie_userpage_fragment"
             app:srcCompat="@android:drawable/btn_star" />
 
@@ -169,9 +167,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
-            app:layout_constraintTop_toTopOf="@+id/star3"
-            app:srcCompat="@android:drawable/btn_star"
-            tools:layout_editor_absoluteX="187dp" />
+            app:layout_constraintEnd_toStartOf="@+id/star3"
+            app:layout_constraintTop_toBottomOf="@+id/movie_userpage_fragment"
+            app:srcCompat="@android:drawable/btn_star" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/star1"
@@ -180,9 +178,9 @@
             android:clickable="true"
             app:layout_constraintEnd_toStartOf="@+id/star2"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/movie_info_rate"
-            app:srcCompat="@android:drawable/btn_star"
-            tools:layout_editor_absoluteY="216dp" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/movie_userpage_fragment"
+            app:srcCompat="@android:drawable/btn_star" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

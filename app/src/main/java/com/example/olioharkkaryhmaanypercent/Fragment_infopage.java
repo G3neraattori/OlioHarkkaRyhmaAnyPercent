@@ -70,7 +70,7 @@ public class Fragment_infopage extends Fragment {
         FloatingActionButton star1 = view.findViewById(R.id.star1);
         FloatingActionButton star2 = view.findViewById(R.id.star2);
         FloatingActionButton star3 = view.findViewById(R.id.star3);
-        FloatingActionButton star4 = view.findViewById(R.id.star3);
+        FloatingActionButton star4 = view.findViewById(R.id.star4);
         FloatingActionButton star5 = view.findViewById(R.id.star5);
         View.OnClickListener starListener = new View.OnClickListener() {
             @Override
@@ -82,7 +82,7 @@ public class Fragment_infopage extends Fragment {
                     rating = 2;
                 } else if (view == view.findViewById(R.id.star3)) {
                     rating = 3;
-                } else if (view == view.findViewById(R.id.star3)) {
+                } else if (view == view.findViewById(R.id.star4)) {
                     rating = 4;
                 } else if (view == view.findViewById(R.id.star5)) {
                     rating = 5;
