@@ -84,11 +84,14 @@ public class Fragment_user_infopage extends Fragment {
                         Toast.makeText(getContext(), "Elokuva tallennettu suosikeihin", Toast.LENGTH_SHORT).show();
                     }
                 } else if (view == view.findViewById(R.id.movie_info_rate)) {
-                    if (1==1/*movieIsFavourite==1*/) {
+                    if (MainActivity.userManager.currentUser==null) {
                         UserData user = new UserData(requireContext());
                         Toast.makeText(getContext(), "Tallenna elokuva ennen arvostelua.", Toast.LENGTH_SHORT).show();
+
                     } else {
                         //rateMovie(movie, personalRating)
+                        UserData user = new UserData(requireContext());
+                        user.saveReview(MainActivity.userManager.currentUser, movie, "Coda - Kahden maailman välissä", 5);
                         Toast.makeText(getContext(), "Elokuva arvosteltu", Toast.LENGTH_SHORT).show();
                     }
                 }

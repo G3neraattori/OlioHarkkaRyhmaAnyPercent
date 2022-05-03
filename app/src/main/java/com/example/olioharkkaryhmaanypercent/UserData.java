@@ -305,6 +305,45 @@ public class UserData extends MainActivity{
         }
     }
 
+    public void saveReview(USER user, Movie movie, String moviename, int review){
+        System.out.println("Username1:" + user.getUsername());
+        System.out.println("Moviename1: " + movie.getMovieName());
+        JSONParser parser = new JSONParser();
+
+        JSONObject jsonObject;
+        try {
+            JSONArray list = new JSONArray();
+            HashMap<String, Movie> movieList = new HashMap<String, Movie>();
+            JSONArray array = (JSONArray) parser.parse(new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"userdata"+user.getUsername()+".json")));
+
+            for(int i = 0; i < array.size(); i++){
+                jsonObject = (JSONObject) array.get(i);
+                JSONObject movieObject;
+                movieObject = (JSONObject) jsonObject.get("Movie");
+                if(movieObject.get("name").toString().equals(moviename)){
+                    movieObject.put("personal", review);
+                    jsonObject.put("Movie", movieObject);
+                    list.add(jsonObject);
+                }else{
+                    list.add(jsonObject);
+                }
+
+            }
+
+
+
+
+            file = new OutputStreamWriter(new FileOutputStream(context.getFilesDir().getPath()+"userdata"+user.getUsername()+".json"));
+            file.write(list.toJSONString());
+            file.flush();
+            file.close();
+
+
+        } catch (ParseException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static class USER extends UserData{
         boolean newUser;
         String username;
