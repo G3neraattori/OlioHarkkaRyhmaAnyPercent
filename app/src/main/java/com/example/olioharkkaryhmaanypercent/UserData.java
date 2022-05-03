@@ -24,7 +24,9 @@ import java.io.OutputStreamWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
 
 
 public class UserData extends MainActivity{
@@ -153,7 +155,7 @@ public class UserData extends MainActivity{
                     System.out.println(salt2+"-------------"+hash);
                     System.out.println(b);
                     if (getPass(givenPass, salt2, "", true).equals(hash)) {
-                        System.out.print("Password Correct.");
+                        System.out.println("Password Correct.");
                         return true;
                     }
                 }
@@ -211,8 +213,38 @@ public class UserData extends MainActivity{
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            return;
         }
+
         //TODO tarvitsee sen miten data esitetetään käyttäjäsivulla. Luultavasti parsee jsonista kaiken siihhen sivulle kivasti
+
+    }
+
+    public static HashMap<String, Movie> actuallyLoadUserData(String username){
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject;
+
+        try {
+            HashMap<String, Movie> movieList = new HashMap<String, Movie>();
+            JSONArray array = (JSONArray) parser.parse(new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"userdata"+username+".json")));
+
+            for(int i = 0; i < array.size(); i++){
+                jsonObject = (JSONObject) array.get(i);
+                JSONObject movieObject;
+                movieObject = (JSONObject) jsonObject.get("Movie");
+                System.out.println(movieObject);
+                System.out.println(movieObject.get("name"));
+                movieList.put(movieObject.get("id").toString(), new Movie(movieObject.get("name").toString(), Integer.parseInt(movieObject.get("id").toString()), movieObject.get("description").toString(), "", null, 0, Integer.parseInt(movieObject.get("year").toString()), "") );
+                System.out.println(movieObject.get("name").toString());
+
+            }
+            System.out.println(Arrays.asList(movieList));
+            return movieList;
+        } catch (ParseException | IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public void checkIfMovieFavourite(String username, String movieName) {
@@ -251,10 +283,13 @@ public class UserData extends MainActivity{
             JSONArray list = (JSONArray) parser.parse(new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"userdata"+user.getUsername()+".json")));
             //movie.setpersonalRating(personal_rating);
             obj.put("name", movie.getMovieName());
+            obj.put("id", movie.getMovieID());
             obj.put("description", movie.getMovieDescription());
             obj.put("year", movie.getMovieYear());
             obj.put("imdb", movie.getImdbRating());
             obj.put("personal", movie.getPersonalRating());
+
+
 
             JSONObject movieObj = new JSONObject();
             movieObj.put("Movie", obj);
