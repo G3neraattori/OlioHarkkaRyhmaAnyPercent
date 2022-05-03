@@ -1,6 +1,5 @@
 package com.example.olioharkkaryhmaanypercent;
 
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -12,8 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,10 +26,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -40,7 +37,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class MainActivity extends AppCompatActivity {
     public static MovieManager movieManager;
-    Context context = this;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -48,7 +44,10 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         movieManager = new MovieManager();
+        movieManager.generateMovieList();
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
                     fragment = new Fragment1();
                 } else if (view == findViewById(R.id.button2)) {
                     System.out.println("Fragment 2");
-                    movieManager.generateMovieList();
                     fragment = new Fragment2();
                 } else{
                     System.out.println("Fragment 3");
@@ -72,16 +70,14 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-
         Button btn1 = findViewById(R.id.button1);
         btn1.setOnClickListener(listener);
         Button btn2 = findViewById(R.id.button2);
         btn2.setOnClickListener(listener);
         Button btn3 = findViewById(R.id.button3);
         btn3.setOnClickListener(listener);
+        movieManager.generateEntryList();
 
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
         // For testing class construction
     }
 
@@ -90,19 +86,31 @@ public class MainActivity extends AppCompatActivity {
     public class MovieManager {   // MovieManager class contains the list for all movie entries
         private ArrayList<Entry> entryList;
         private HashMap<String, Movie> movieList; // lists all currently available movies
+        private HashMap<String, String> spinnerTheaterList;
 
         public MovieManager() {
             this.entryList = new ArrayList<>();
             this.movieList = new HashMap<>();
         }
-        public MovieManager getMovieManager() { return this;}
 
         public HashMap<String, Movie> getMovieList() {
             return this.movieList;
         }
-
         public ArrayList<Entry> getEntryList() {
             return this.entryList;
+        }
+        public HashMap<String, String> getSpinnerTheaterList() { return this.spinnerTheaterList; }
+
+        public HashSet<LocalDateTime> getMovieDates(int movieID, String location) {
+            HashSet<LocalDateTime> days = new HashSet<>();
+            ArrayList<Entry> entries = this.getEntryList();
+            for (int i = 0; i < entries.size();i++) {
+                if (entries.get(i).getMovieID() == movieID && (entries.get(i).getEntryLocation().equals(location)||location.equals(""))) {
+                    LocalDateTime entryDay = entries.get(i).getEntryDateTime();
+                    days.add(entryDay);
+                }
+            }
+            return days;
         }
 
         public void printEntries() { // gettien testaamistarkoitukseen
@@ -111,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 Entry entry = listOfEntries.get(i);
                 System.out.println("Entry data: ");
                 System.out.println("Entry location: " + entry.getEntryLocation());
-                System.out.println("Entry time and date: " + entry.getEntryDate().toString() + " " + entry.getEntryTime().toString());
+                System.out.println("Entry time and date: " + entry.getEntryDateTime().toString());
                 System.out.println("MovieID: " + entry.getEntryMovie(this).getMovieID());
                 System.out.println("Movie title: " + entry.getEntryMovie(this).getMovieName());
                 System.out.println("Movie year: " + entry.getEntryMovie(this).getMovieYear());
@@ -174,10 +182,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.O)
         public void generateEntryList() {  // Gets the entries from Finnkino xml and saves them.
 
             // List containing all the theater ids to go through
             int[] allTheatersId = {1014, 1015, 1016, 1017, 1018, 1019, 1021, 1022, 1041};
+            this.spinnerTheaterList = new HashMap<>();
             try {
                 for (int i = 0; i < 9; i++) {
                     DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -192,87 +202,77 @@ public class MainActivity extends AppCompatActivity {
 
                         int movieID = Integer.parseInt(element.getElementsByTagName("EventID").item(0).getTextContent());
                         String location = element.getElementsByTagName("Theatre").item(0).getTextContent();
+                        String theaterId = element.getElementsByTagName("TheatreID").item(0).getTextContent();
                         int lengthInMin = Integer.parseInt(element.getElementsByTagName("LengthInMinutes").item(0).getTextContent());
                         String[] dateTimeString = element.getElementsByTagName("dttmShowStart").item(0).getTextContent().split("T", 2);
                         String[] dateString = dateTimeString[0].split("-", 3);
                         String[] timeString = dateTimeString[1].split(":", 3);
-                        Date date = new Date(Integer.parseInt(dateString[0]), Integer.parseInt(dateString[1]), Integer.parseInt(dateString[2]));
-                        Time time = new Time(Integer.parseInt(timeString[0]), Integer.parseInt(timeString[1]), Integer.parseInt(timeString[2]));
-                        // Date and Time classes are deprecated, but couldnt figure another way to do this, as LocalTime and LocalDate dont
-                        // work on android 6.0
-                        this.getEntryList().add(new Entry(movieID, location, lengthInMin, date, time));
+                        LocalDateTime dateTime = LocalDateTime.of(Integer.parseInt(dateString[0]),Integer.parseInt(dateString[1]), Integer.parseInt(dateString[2]),Integer.parseInt(timeString[0]),Integer.parseInt(timeString[1]));
+                        this.getEntryList().add(new Entry(movieID, location, lengthInMin, dateTime));
+                        this.spinnerTheaterList.putIfAbsent(theaterId, location);
                     }
+                    System.out.println(this.spinnerTheaterList.size() + "koko");
                 }
             } catch (IOException | SAXException | ParserConfigurationException e) {
                 e.printStackTrace();
             }
         }
 
-        public void getDataFromImdb() {
-            for (Movie movie : this.getMovieList().values()) {
-                try {
-                    String searchTerm = movie.getOriginalName();
-                    DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-                    String apiKey = "k_aaaaaaaa";
-                    URL url = new URL("https://imdb-api.com/API/AdvancedSearch/" + apiKey + "/?title=" + searchTerm);
-                    HttpURLConnection connection;
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod("GET");
-                    connection.setDoInput(true);
 
-                    InputStream stream = connection.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-                    StringBuilder stringBuilder = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        stringBuilder.append(line + "\n");
-                    }
-                    reader.close();
-                    String jsonString = stringBuilder.toString();
-                    JSONObject jsonObject = new JSONObject(jsonString);
-                    if (jsonObject.getJSONArray("results").length() != 0) {
-                        JSONObject results = jsonObject.getJSONArray("results").getJSONObject(0);
-                        String ratingString = results.getString("imDbRating");
-                        System.out.println(ratingString + "Tää on se score");
-                        try {
-                            movie.setImdbRating(Double.parseDouble(ratingString));
-                        } catch (NullPointerException | NumberFormatException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } catch (IOException | ParserConfigurationException | JSONException e) {
-                    e.printStackTrace();
+        public double getDataFromImdb(String movieName) {
+            try {
+                String searchTerm = movieName;
+                DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                String apiKey = "k_aaaaaaaa";
+                URL url = new URL("https://imdb-api.com/API/AdvancedSearch/" + apiKey + "/?title=" + searchTerm);
+                HttpURLConnection connection;
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setDoInput(true);
+
+                InputStream stream = connection.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+                StringBuilder stringBuilder = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    stringBuilder.append(line + "\n");
                 }
+                reader.close();
+                String jsonString = stringBuilder.toString();
+                JSONObject jsonObject = new JSONObject(jsonString);
+                if (jsonObject.getJSONArray("results").length() != 0) {
+                    JSONObject results = jsonObject.getJSONArray("results").getJSONObject(0);
+                    String ratingString = results.getString("imDbRating");
+                    System.out.println(ratingString + "Tää on se score");
+                    return(Double.parseDouble(ratingString));
+                }
+            } catch (IOException | ParserConfigurationException | JSONException e) {
+                e.printStackTrace();
             }
+            return(0.0);
         }
 
         public class Entry { // each entry is fetched from Finkino xml and contains info on one
                             // showing of a movie
-            public Entry(int movieID, String location, int lengthInMin, Date entryDate, Time entryTime) {
+            public Entry(int movieID, String location, int lengthInMin, LocalDateTime entryDateTime) {
                 this.movieID = movieID;
-                this.entryTime = entryTime;
-                this.entryDate = entryDate;
+                this.entryDateTime = entryDateTime;
                 this.entryLocation = location;
                 this.lengthInMin = lengthInMin;
 
             }
             private int movieID;
-            private Date entryDate;
-            private Time entryTime;
+            private LocalDateTime entryDateTime;
             private String entryLocation;
             private int lengthInMin;
 
 
-            private Date getEntryDate() {
-                return this.entryDate;
+            private LocalDateTime getEntryDateTime() {
+                return this.entryDateTime;
             }
 
             private String getEntryLocation() {
                 return this.entryLocation;
-            }
-
-            private Time getEntryTime() {
-                return this.entryTime;
             }
 
             private int getMovieID() {
