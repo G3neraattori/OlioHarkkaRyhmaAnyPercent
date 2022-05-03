@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
 
         public double getDataFromImdb(String movieName) {
             try {
-                String apiKey = "k_gn414e7y";
+                String apiKey = "k_0fb348oe";
                 URL url = new URL("https://imdb-api.com/API/AdvancedSearch/" + apiKey + "/?title=" + movieName);
                 HttpURLConnection connection;
                 connection = (HttpURLConnection) url.openConnection();
