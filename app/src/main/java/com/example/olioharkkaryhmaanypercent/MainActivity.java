@@ -14,6 +14,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -28,7 +30,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -80,8 +84,6 @@ public class MainActivity extends AppCompatActivity {
         Button btn3 = findViewById(R.id.button3);
         btn3.setOnClickListener(listener);
         movieManager.generateEntryList();
-
-        // For testing class construction
     }
 
     public class UserManager {
@@ -97,9 +99,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-
-
 
     public class MovieManager {   // MovieManager class contains the list for all movie entries
         private ArrayList<Entry> entryList;
@@ -131,27 +130,22 @@ public class MainActivity extends AppCompatActivity {
             return days;
         }
 
-        public void printEntries() { // gettien testaamistarkoitukseen
-            ArrayList<Entry> listOfEntries = this.getEntryList();
-            for (int i = 0; i < 50; i++) {
-                Entry entry = listOfEntries.get(i);
-                System.out.println("Entry data: ");
-                System.out.println("Entry location: " + entry.getEntryLocation());
-                System.out.println("Entry time and date: " + entry.getEntryDateTime().toString());
-                System.out.println("MovieID: " + entry.getEntryMovie(this).getMovieID());
-                System.out.println("Movie title: " + entry.getEntryMovie(this).getMovieName());
-                System.out.println("Movie year: " + entry.getEntryMovie(this).getMovieYear());
-                System.out.println("Movie length: " + entry.getEntryMovie(this).getMovieLength() + " minutes");
-                System.out.println("Movie synopsis: " + entry.getEntryMovie(this).getMovieDescription());
-                System.out.println("Movie director: " + entry.getEntryMovie(this).getMovieCast().getCastDirector());
-                System.out.println("Movie rating IMDB: " + entry.getEntryMovie(this).getImdbRating());
-                System.out.println("Movie image url: " + entry.getEntryMovie(this).getImageurl());
-                System.out.println("Movie actors:");
-                for (int j = 0; j < entry.getEntryMovie(this).getMovieCast().getCastActors().size(); j++) {
-                    System.out.println(entry.getEntryMovie(this).getMovieCast().getCastActors().get(j));
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        public HashSet<LocalTime> getMovieShowTimes(Movie movie, CalendarDay day, String location) {
+            HashSet<LocalTime> times = new HashSet<>();
+            ArrayList<Entry> entries = this.getEntryList();
+            LocalDate targetDay = LocalDate.of(day.getYear(),day.getMonth(),day.getDay());
+            for (int i=0; i < entries.size();i++) {
+                LocalDate entryDate = entries.get(i).getEntryDateTime().toLocalDate();
+                if (entryDate.isEqual(targetDay)) {
+                    if (entries.get(i).getEntryLocation().equals(location)) {
+                        if (movie.getMovieID()==entries.get(i).getMovieID()) {
+                            times.add(entries.get(i).getEntryDateTime().toLocalTime());
+                        }
+                    }
                 }
-                System.out.println("*******************");
             }
+            return times;
         }
 
         public void generateMovieList() { // Generate a list of all currently available movies
@@ -258,7 +252,6 @@ public class MainActivity extends AppCompatActivity {
                 if (jsonObject.getJSONArray("results").length() != 0) {
                     JSONObject results = jsonObject.getJSONArray("results").getJSONObject(0);
                     String ratingString = results.getString("imDbRating");
-                    System.out.println(ratingString);
                     if (ratingString.equals("")) {
                         return(0.0);
                     } else {
@@ -293,7 +286,6 @@ public class MainActivity extends AppCompatActivity {
             private String getEntryLocation() {
                 return this.entryLocation;
             }
-
             private int getMovieID() {
                 return this.movieID;
             }

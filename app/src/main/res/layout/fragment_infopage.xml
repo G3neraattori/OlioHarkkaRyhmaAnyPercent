@@ -86,7 +86,8 @@
             tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/movie_show_times"
+            android:id="@+id/movie_info_show_times"
+            android:text="Esitysajat: "
             android:layout_width="162dp"
             android:layout_height="306dp"
             app:layout_constraintEnd_toEndOf="parent"

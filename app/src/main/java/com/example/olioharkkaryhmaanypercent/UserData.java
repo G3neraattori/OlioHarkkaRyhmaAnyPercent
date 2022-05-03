@@ -182,7 +182,6 @@ public class UserData extends MainActivity{
                     return true;
                 }
             }
-
         } catch (ParseException | IOException e) {
             e.printStackTrace();
         }
