@@ -41,7 +41,7 @@ public class UserData extends MainActivity{
 
     }
 
-    //Tekee käyttäjän
+    //Creates a new user
     @RequiresApi(api = Build.VERSION_CODES.O)
     public boolean createUser(String username, String passwordToHash) throws NoSuchAlgorithmException {
         byte[] salt = getSalt();
@@ -52,11 +52,11 @@ public class UserData extends MainActivity{
     }
 
 
-    //Luo ja uudelleen luo hashejä.
+    //Creates SHA256 hashes with salt
     @RequiresApi(api = Build.VERSION_CODES.O)
     private String getPass(String passwordToHash, byte[] salt, String username, boolean notCreating) {
         File asset = new File(context.getFilesDir().getPath()+"database.json");
-        //Ensimmäisellä asennuksella kopio database.json assettin
+        //Copys the database from assets on first install
         if(!asset.exists()){
             try {
                 copydatabase();
@@ -65,7 +65,7 @@ public class UserData extends MainActivity{
             }
         }
         String generatedPassword = null;
-        //Tekee uuden olion .json
+        //creates new .json
         try {
             JSONObject obj = new JSONObject();
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -92,7 +92,6 @@ public class UserData extends MainActivity{
                         System.out.println(line);
                     }
                     JSONArray list = (JSONArray) parser.parse(new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"database.json")));
-                    System.out.println(list);
                     list.add(obj);
                     file = new OutputStreamWriter(new FileOutputStream(context.getFilesDir().getPath()+"database.json"));
                     file.write(list.toJSONString());
@@ -110,6 +109,7 @@ public class UserData extends MainActivity{
         return generatedPassword;
     }
 
+    //Copies database
     private void copydatabase() throws IOException {
          final String path = context.getFilesDir().getPath();
          final String Name = "database.json";
@@ -127,7 +127,7 @@ public class UserData extends MainActivity{
 
     }
 
-    // Lisää salt
+    // Creates salt
     private static byte[] getSalt() throws NoSuchAlgorithmException {
         SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
         byte[] salt = new byte[64];
@@ -135,8 +135,8 @@ public class UserData extends MainActivity{
         return salt;
     }
 
-    //Returnaa TRUE jos löytyi käyttäjä false jos ei
-    //TALLENTAA VAIN PUHELIMEEN PITÄISI MUUTTAA TALLENTAMAAN PALVELIMELLE MUTTA MEILLÄ EI OLE SIIHEN RESURSSEJÄ.
+    //Returns true if user is found with correct password
+    //This should be on a server but we dont have resources for that.
     @RequiresApi(api = Build.VERSION_CODES.O)
     public boolean validatePassword(String givenPass, String username) throws NoSuchAlgorithmException {
         JSONParser parser = new JSONParser();
@@ -146,16 +146,13 @@ public class UserData extends MainActivity{
             for(int i = 0; i < array.size(); i++){
                 jsonObject = (JSONObject) array.get(i);
                 String name = (String) jsonObject.get("username");
-                System.out.print("Searching for: " + name + " with password: " + givenPass + "\n");
                 if(name.equals(username)){
-                    System.out.print("Username found\n");
                     String hash = (String) jsonObject.get("hash");
                     String salt = (String) jsonObject.get("salt");
 
                     byte[] salt2 = Base64.getDecoder().decode(salt);
                     String b = getPass(givenPass, salt2, "", true);
-                    System.out.println(salt2+"-------------"+hash);
-                    System.out.println(b);
+
                     if (getPass(givenPass, salt2, "", true).equals(hash)) {
                         Toast.makeText(context, "Kirjauduttu sisään.", Toast.LENGTH_SHORT).show();
                         return true;
@@ -178,7 +175,6 @@ public class UserData extends MainActivity{
             for(int i = 0; i < array.size(); i++){
                 jsonObject = (JSONObject) array.get(i);
                 String name = (String) jsonObject.get("username");
-                System.out.println("Searching for: " + username);
                 if(name.equals(username)){
                     System.out.print("Username found\n");
                     return true;
@@ -187,14 +183,14 @@ public class UserData extends MainActivity{
         } catch (ParseException | IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Searching for: " + username);
         return false;
     }
 
-    //lataa käyttäjädatan. tämäkin olisi normaalisti palvelimella mutta enemmän proof on concept
+    //Creates a new file for userdata. This should be encrypted too.
+    ////This should be on a server but we dont have resources for that.
     public void loadUserData(String username){
         File asset = new File(context.getFilesDir().getPath()+"userdata"+username+".json");
-        //Ensimmäisellä asennuksella kopio userdata.json assettin
+        //creates copy of userdata asset
         if(!asset.exists()){
             try {
                 final String path = context.getFilesDir().getPath();
@@ -216,11 +212,9 @@ public class UserData extends MainActivity{
             }
             return;
         }
-
-        //TODO tarvitsee sen miten data esitetetään käyttäjäsivulla. Luultavasti parsee jsonista kaiken siihhen sivulle kivasti
-
     }
 
+    //Loads the data from json to be manipulated for the userpage
     public static HashMap<String, Movie> actuallyLoadUserData(String username){
         JSONParser parser = new JSONParser();
         JSONObject jsonObject;
@@ -233,13 +227,9 @@ public class UserData extends MainActivity{
                 jsonObject = (JSONObject) array.get(i);
                 JSONObject movieObject;
                 movieObject = (JSONObject) jsonObject.get("Movie");
-                System.out.println(movieObject);
-                System.out.println(movieObject.get("name"));
                 movieList.put(movieObject.get("id").toString(), new Movie(movieObject.get("name").toString(), Integer.parseInt(movieObject.get("id").toString()), movieObject.get("description").toString(), "", null, 0, Integer.parseInt(movieObject.get("year").toString()), "", Integer.parseInt(movieObject.get("personal").toString())));
-                System.out.println(movieObject.get("name").toString());
 
             }
-            System.out.println(Arrays.asList(movieList));
             return movieList;
         } catch (ParseException | IOException e) {
             e.printStackTrace();
@@ -248,39 +238,18 @@ public class UserData extends MainActivity{
         return null;
     }
 
-    public void checkIfMovieFavourite(String username, String movieName) {
-        try{
-            JSONParser parser = new JSONParser();
-
-            BufferedReader br = new BufferedReader (new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"database.json")));
-            String line;
-            while((line = br.readLine()) != null){
-                System.out.println(line);
-            }
-            JSONArray list = (JSONArray) parser.parse(new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"database.json")));
-
-            file = new OutputStreamWriter(new FileOutputStream(context.getFilesDir().getPath()+"database.json"));
-            file.write(list.toJSONString());
-            file.flush();
-            file.close();
-        }catch (IOException | ParseException e){
-            e.printStackTrace();
-        }
-
-    }
-    //, int personal_rating
+    //Saves a movie from the movielist
     public static void saveMovie(USER user, Movie movie){
-        System.out.println("Username1:" + user.getUsername());
-        System.out.println("Moviename1: " + movie.getMovieName());
+
         JSONObject obj = new JSONObject();
         try{
             JSONParser parser = new JSONParser();
 
             BufferedReader br = new BufferedReader (new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"userdata"+user.getUsername()+".json")));
-            String line;
+            /*String line;
             while((line = br.readLine()) != null){
                 System.out.println(line);
-            }
+            }*/
             JSONArray list = (JSONArray) parser.parse(new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"userdata"+user.getUsername()+".json")));
             //movie.setpersonalRating(personal_rating);
             obj.put("name", movie.getMovieName());
@@ -305,9 +274,8 @@ public class UserData extends MainActivity{
         }
     }
 
+    //Saves a review for the movie = edits the json
     public void saveReview(USER user, Movie movie, String moviename, int review){
-        System.out.println("Username1:" + user.getUsername());
-        System.out.println("Moviename1: " + movie.getMovieName());
         JSONParser parser = new JSONParser();
 
         JSONObject jsonObject;
@@ -340,6 +308,7 @@ public class UserData extends MainActivity{
         }
     }
 
+    //Class for tracking the user
     public static class USER extends UserData{
         boolean newUser;
         String username;

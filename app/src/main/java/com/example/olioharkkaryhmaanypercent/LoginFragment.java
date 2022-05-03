@@ -67,6 +67,7 @@ public class LoginFragment extends Fragment {
     public void login(UserData user) throws NoSuchAlgorithmException {
         String name = String.valueOf(username.getText());
         String pass = String.valueOf(salari.getText());
+
         if(!user.getUser(name)){
             user.createUser(name, pass);
 //            user.user.setStatus(true);
