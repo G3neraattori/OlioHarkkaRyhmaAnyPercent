@@ -14,9 +14,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
     private Object[] moviearray;
     private Fragment2 fragment;
+    ImageView imageView;
     // RecyclerView recyclerView;
     public RecyclerViewAdapter(Object[] moviearray, Fragment2 fragment) {
         this.fragment = fragment;
@@ -35,7 +38,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Movie movie = (Movie)moviearray[position];
         holder.textView.setText(movie.getMovieName());
-        //holder.imageView.setImageResource(listdata[position].getImgId());
+
+        //Get pictures from url
+        if (movie.getImageurl().trim().length() != 0) {
+            Picasso.get().load(movie.getImageurl()).resize(100, 150).placeholder(R.drawable.ic_launcher_background).error(R.drawable.ic_launcher_background).into(holder.imageView);
+        }
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,6 +51,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             }
         });
     }
+
     // RecyclerView Set Text And Image Or Click  End
     // RecyclerView Set View item limit
     @Override

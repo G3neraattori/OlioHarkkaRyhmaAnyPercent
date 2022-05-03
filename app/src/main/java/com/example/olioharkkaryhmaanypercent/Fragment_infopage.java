@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -51,6 +52,7 @@ import java.io.OutputStreamWriter;
 public class Fragment_infopage extends Fragment {
     public int position;
     View view;
+    ImageView imageView;
 
     public void setPosition(int position) { this.position = position; }
     @Nullable
@@ -101,6 +103,11 @@ public class Fragment_infopage extends Fragment {
 
         String imageurl = movie.getImageurl();
         System.out.println(imageurl);
+
+        //Picture for url with picasso library
+        if (movie.getImageurl().trim().length() != 0) {
+            Picasso.get().load(imageurl).resize(200, 300).placeholder(R.drawable.ic_launcher_background).error(R.drawable.ic_launcher_background).into(movie_info_image);
+        }
         String location = "";
         Collection<LocalDateTime> dateTimes = MainActivity.movieManager.getMovieDates(movie.getMovieID(), location);
         Collection<CalendarDay> days = new HashSet<CalendarDay>();
@@ -163,7 +170,6 @@ public class Fragment_infopage extends Fragment {
             return null;
         }
     }
-
     public void saveMovie(String username){
         OutputStreamWriter file;
         JSONObject obj = new JSONObject();
@@ -190,5 +196,6 @@ public class Fragment_infopage extends Fragment {
 
 
     }
+
 
 }
