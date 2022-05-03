@@ -43,7 +43,9 @@ public class Fragment3 extends Fragment {
         if (currentUser!=null) {
             Fragment fragment = new Fragment4();
             FragmentManager fragmentManager = getParentFragmentManager();
-            fragmentManager.beginTransaction().add(R.id.fragment3, fragment).remove(this).commit();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fragmentWindow, fragment);
+            fragmentTransaction.commit();
             user.loadUserData(currentUser.getUsername());
         }
         username = (EditText) getView().findViewById(R.id.username);
