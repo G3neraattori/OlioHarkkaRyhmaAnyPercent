@@ -168,24 +168,4 @@ public class Fragment_infopage extends Fragment {
         movie_info_year.setText(Integer.toString(movie.getMovieYear()));
         //movie_info_imdbrating.setText("Imdb pisteet:\n\n" + MainActivity.movieManager.getDataFromImdb(movie.getOriginalName()));
     }
-    public static Bitmap getBitmapFromURL(String src) {
-        try {
-
-            //uncomment below line in image name have spaces.
-            //src = src.replaceAll(" ", "%20");
-
-            URL url = new URL(src);
-
-            HttpURLConnection connection = (HttpURLConnection) url
-                    .openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (Exception e) {
-            Log.d("", e.toString());
-            return null;
-        }
-    }
 }
