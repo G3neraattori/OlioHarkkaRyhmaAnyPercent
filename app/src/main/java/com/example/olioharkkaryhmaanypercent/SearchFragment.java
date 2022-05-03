@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class Fragment1 extends Fragment {
+public class SearchFragment extends Fragment {
     View view;
     public HashMap<String, Movie> movielist;
 

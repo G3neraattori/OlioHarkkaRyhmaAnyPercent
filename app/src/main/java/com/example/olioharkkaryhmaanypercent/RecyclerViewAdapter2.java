@@ -14,10 +14,10 @@ import com.squareup.picasso.Picasso;
 
 public class RecyclerViewAdapter2 extends RecyclerView.Adapter<RecyclerViewAdapter2.ViewHolder>{
     private Object[] moviearray;
-    private Fragment4 fragment;
+    private UserpageFragment fragment;
     ImageView imageView;
     // RecyclerView recyclerView;
-    public RecyclerViewAdapter2(Object[] moviearray, Fragment4 fragment) {
+    public RecyclerViewAdapter2(Object[] moviearray, UserpageFragment fragment) {
         this.fragment = fragment;
         this.moviearray = moviearray;
     }

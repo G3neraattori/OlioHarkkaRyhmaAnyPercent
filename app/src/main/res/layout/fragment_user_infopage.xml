@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/fragment_infopage"
+    android:layout_marginBottom="40dp"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="634dp">
+
+        <TextView
+            android:id="@+id/movie_info_name"
+            android:layout_width="216dp"
+            android:layout_height="65dp"
+            android:text="TextView"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/movie_info_image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.07999998" />
+
+        <ImageView
+            android:id="@+id/movie_info_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.085"
+            app:srcCompat="@drawable/ic_launcher_background"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/movie_info_description"
+            android:layout_width="302dp"
+            android:layout_height="191dp"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbars="vertical"
+            android:text="TextView"
+            android:textSize="10dp"
+            android:verticalScrollbarPosition="right"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/movie_info_image"
+            app:layout_constraintTop_toBottomOf="@+id/movie_info_name" />
+
+        <TextView
+            android:id="@+id/movie_info_year"
+            android:layout_width="56dp"
+            android:layout_height="18dp"
+            android:text="TextView"
+            app:layout_constraintEnd_toStartOf="@+id/movie_info_description"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/movie_info_image" />
+
+        <Button
+            android:id="@+id/movie_info_favourite"
+            android:layout_width="93dp"
+            android:layout_height="47dp"
+            android:text="Tallenna suosikeihin"
+            android:textSize="8sp"
+            app:layout_constraintEnd_toStartOf="@+id/movie_info_description"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/movie_info_year" />
+
+        <Button
+            android:id="@+id/movie_info_rate"
+            android:layout_width="93dp"
+            android:layout_height="47dp"
+            android:text="Arvostele"
+            android:textSize="9sp"
+            app:layout_constraintEnd_toStartOf="@+id/movie_info_description"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/movie_info_favourite" />
+
+        <TextView
+            android:id="@+id/movie_info_imdbrating"
+            android:layout_width="90dp"
+            android:layout_height="65dp"
+            android:text="Imdb rating:\n\n0.0"
+            app:layout_constraintBottom_toTopOf="@+id/movie_info_description"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/movie_info_name" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

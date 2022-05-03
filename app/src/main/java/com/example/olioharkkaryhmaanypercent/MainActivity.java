@@ -1,10 +1,8 @@
 package com.example.olioharkkaryhmaanypercent;
 
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.os.UserManager;
 import android.view.View;
 import android.widget.Button;
 
@@ -57,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         movieManager = new MovieManager();
         userManager = new UserManager();
         movieManager.generateMovieList();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentWindow, new Fragment2()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentWindow, new MovielistFragment()).commit();
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,12 +63,12 @@ public class MainActivity extends AppCompatActivity {
 
                 if (view == findViewById(R.id.button1)) {
                     movieManager.generateMovieList();
-                    fragment = new Fragment1();
+                    fragment = new SearchFragment();
                 } else if (view == findViewById(R.id.button2)) {
                     movieManager.generateMovieList();
-                    fragment = new Fragment2();
+                    fragment = new MovielistFragment();
                 } else{
-                    fragment = new Fragment3();
+                    fragment = new LoginFragment();
                 }
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();

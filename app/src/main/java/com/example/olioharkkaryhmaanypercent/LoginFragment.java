@@ -16,11 +16,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import org.w3c.dom.Text;
-
 import java.security.NoSuchAlgorithmException;
 
-public class Fragment3 extends Fragment {
+public class LoginFragment extends Fragment {
 
     View view;
     EditText username;
@@ -41,7 +39,7 @@ public class Fragment3 extends Fragment {
         UserData user = new UserData(requireContext());
         UserData.USER currentUser = MainActivity.userManager.getCurrentUser();
         if (currentUser!=null) {
-            Fragment fragment = new Fragment4();
+            Fragment fragment = new UserpageFragment();
             FragmentManager fragmentManager = getParentFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.fragmentWindow, fragment);
@@ -78,7 +76,7 @@ public class Fragment3 extends Fragment {
                 MainActivity.userManager.currentUser = new UserData.USER(getContext());
                 MainActivity.userManager.setCurrentUser(name);
                 user.loadUserData(name);
-                Fragment fragment = new Fragment4();
+                Fragment fragment = new UserpageFragment();
                 FragmentManager fragmentManager = getParentFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.fragmentWindow, fragment);
