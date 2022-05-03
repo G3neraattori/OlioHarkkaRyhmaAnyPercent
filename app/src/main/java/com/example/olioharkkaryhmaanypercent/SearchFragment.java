@@ -40,6 +40,7 @@ public class SearchFragment extends Fragment {
         SearchView.OnQueryTextListener searchlistener = new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+                MainActivity.movieManager.generateMovieList();
                 movielist = MainActivity.movieManager.getMovieList();
                 HashSet<Movie> movieset = new HashSet<>();
                 for (Object m : movielist.values().toArray()) {

@@ -277,18 +277,15 @@ public class MainActivity extends AppCompatActivity {
             private String entryLocation;
             private int lengthInMin;
 
-
             private LocalDateTime getEntryDateTime() {
                 return this.entryDateTime;
             }
-
             private String getEntryLocation() {
                 return this.entryLocation;
             }
             private int getMovieID() {
                 return this.movieID;
             }
-
             private Movie getEntryMovie(MovieManager movieManager) {
                 return movieManager.getMovieList().get(Integer.toString(this.movieID));
             }
