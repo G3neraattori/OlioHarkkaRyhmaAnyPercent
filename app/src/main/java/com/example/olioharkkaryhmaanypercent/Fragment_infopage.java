@@ -67,7 +67,6 @@ public class Fragment_infopage extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_infopage, container, false);
         setLocation("");
-        //TextView movie_info_name = (TextView) view.findViewById(R.id.movie_info_name);
         return view;
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -167,7 +166,7 @@ public class Fragment_infopage extends Fragment {
         movie_info_name.setText(movie.getMovieName());
         movie_info_description.setText(movie.getMovieDescription());
         movie_info_year.setText(Integer.toString(movie.getMovieYear()));
-        movie_info_imdbrating.setText("Imdb pisteet:\n\n" + MainActivity.movieManager.getDataFromImdb(movie.getOriginalName()));
+        //movie_info_imdbrating.setText("Imdb pisteet:\n\n" + MainActivity.movieManager.getDataFromImdb(movie.getOriginalName()));
     }
     public static Bitmap getBitmapFromURL(String src) {
         try {

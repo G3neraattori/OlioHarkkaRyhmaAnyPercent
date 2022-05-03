@@ -64,8 +64,10 @@ public class MainActivity extends AppCompatActivity {
                 Fragment fragment;
 
                 if (view == findViewById(R.id.button1)) {
+                    movieManager.generateMovieList();
                     fragment = new Fragment1();
                 } else if (view == findViewById(R.id.button2)) {
+                    movieManager.generateMovieList();
                     fragment = new Fragment2();
                 } else{
                     fragment = new Fragment3();
@@ -302,11 +304,11 @@ public class MainActivity extends AppCompatActivity {
                 this.castActors = castActors;
             }
 
-            private String getCastDirector() {
+            public String getCastDirector() {
                 return this.castDirector;
             }
 
-            private ArrayList<String> getCastActors() {
+            public ArrayList<String> getCastActors() {
                 return this.castActors;
             }
 

@@ -48,7 +48,7 @@
             android:textSize="10dp"
             android:verticalScrollbarPosition="right"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/movie_info_image"
             app:layout_constraintTop_toBottomOf="@+id/movie_info_name" />
 
@@ -125,7 +125,7 @@
             android:text="Imdb rating:\n\n0.0"
             app:layout_constraintBottom_toTopOf="@+id/movie_info_description"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/movie_info_name" />
 
 
