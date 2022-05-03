@@ -25,11 +25,13 @@ import androidx.fragment.app.Fragment;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.squareup.picasso.Picasso;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -52,6 +54,10 @@ import java.io.OutputStreamWriter;
 public class Fragment_infopage extends Fragment {
     public int position;
     View view;
+    public String location;
+
+    public void setLocation(String location) { this.location = location; }
+    public String getLocation() { return this.location; }
     ImageView imageView;
 
     public void setPosition(int position) { this.position = position; }
@@ -60,6 +66,7 @@ public class Fragment_infopage extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_infopage, container, false);
+        setLocation("");
         //TextView movie_info_name = (TextView) view.findViewById(R.id.movie_info_name);
         return view;
     }
@@ -70,13 +77,18 @@ public class Fragment_infopage extends Fragment {
         TextView movie_info_description = view.findViewById(R.id.movie_info_description);
         TextView movie_info_year = view.findViewById(R.id.movie_info_year);
         TextView movie_info_imdbrating = view.findViewById(R.id.movie_info_imdbrating);
+        TextView movie_info_show_times = view.findViewById(R.id.movie_info_show_times);
         ImageView movie_info_image = view.findViewById(R.id.movie_info_image);
         MaterialCalendarView mCalendarView = (MaterialCalendarView) view.findViewById(R.id.movie_info_calendar);
         Button rateButton = view.findViewById(R.id.movie_info_rate);
         Button favouriteButton = view.findViewById(R.id.movie_info_favourite);
         Movie[] movielist = MainActivity.movieManager.getMovieList().values().toArray(new Movie[0]);
         Movie movie = movielist[position];
-        movie_info_imdbrating.setText("Imdb rating:\n\n" + movie.getImdbRating());
+        if (movie.getImdbRating()==0.0) {
+            movie_info_imdbrating.setText("Imdb rating:\n\n" + MainActivity.movieManager.getDataFromImdb(movie.getOriginalName()));
+        } else {
+            movie_info_imdbrating.setText("Imdb rating:\n\n" + movie.getImdbRating());
+        }
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,10 +112,7 @@ public class Fragment_infopage extends Fragment {
         };
         rateButton.setOnClickListener(listener);
         favouriteButton.setOnClickListener(listener);
-
         String imageurl = movie.getImageurl();
-        System.out.println(imageurl);
-
         //Picture for url with picasso library
         if (movie.getImageurl().trim().length() != 0) {
             Picasso.get().load(imageurl).resize(200, 300).placeholder(R.drawable.ic_launcher_background).error(R.drawable.ic_launcher_background).into(movie_info_image);
@@ -118,7 +127,6 @@ public class Fragment_infopage extends Fragment {
         List<String> spinnerTheaterList2 = new ArrayList<String>();
         for (int i = 0; i < spinnerTheaterList.size();i++) {
             spinnerTheaterList2.add(spinnerTheaterList.values().toArray()[i].toString());
-            System.out.println(spinnerTheaterList.values().toArray()[i].toString());
         }
         List<String> spinnerTheaterList3 = spinnerTheaterList2.stream().sorted().collect(Collectors.toList());
         ArrayAdapter customAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, spinnerTheaterList3);
@@ -126,15 +134,13 @@ public class Fragment_infopage extends Fragment {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println("tää on " + position);
                 mCalendarView.removeDecorators();
-                String location = spinnerTheaterList3.get(position);
-                Collection<LocalDateTime> dateTimes = MainActivity.movieManager.getMovieDates(movie.getMovieID(), location);
+                setLocation(spinnerTheaterList3.get(position));
+                Collection<LocalDateTime> dateTimes = MainActivity.movieManager.getMovieDates(movie.getMovieID(), getLocation());
                 Collection<CalendarDay> days = new HashSet<CalendarDay>();
                 for (LocalDateTime e : dateTimes) {
                     days.add(CalendarDay.from(e.getYear(),e.getMonthValue(),e.getDayOfMonth()));
                 }
-                System.out.println(MainActivity.movieManager.getEntryList().size());
                 EventDecorator decorator = new EventDecorator(Color.GREEN, days);
                 mCalendarView.addDecorator(decorator);
             }
@@ -142,6 +148,19 @@ public class Fragment_infopage extends Fragment {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+        OnDateSelectedListener dateListener = new OnDateSelectedListener() {
+            @Override
+            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+                HashSet<LocalTime> showTimes = MainActivity.movieManager.getMovieShowTimes(movie, date, getLocation());
+                String showTimeString = "Esitysajat:\n";
+                for (LocalTime time : showTimes) {
+                    showTimeString = showTimeString.concat(time.toString() + "\n");
+                }
+                movie_info_show_times.setText(showTimeString);
+            }
+        };
+
+        mCalendarView.setOnDateChangedListener(dateListener);
         spinner.setAdapter(customAdapter);
         EventDecorator decorator = new EventDecorator(Color.GREEN, days);
         mCalendarView.addDecorator(decorator);
@@ -170,6 +189,4 @@ public class Fragment_infopage extends Fragment {
             return null;
         }
     }
-
-
 }
