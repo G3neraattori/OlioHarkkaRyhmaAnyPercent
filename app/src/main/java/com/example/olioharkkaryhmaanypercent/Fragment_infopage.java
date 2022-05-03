@@ -170,32 +170,6 @@ public class Fragment_infopage extends Fragment {
             return null;
         }
     }
-    public void saveMovie(String username){
-        OutputStreamWriter file;
-        JSONObject obj = new JSONObject();
-        try{
-            JSONParser parser = new JSONParser();
-
-            BufferedReader br = new BufferedReader (new InputStreamReader(new FileInputStream(getActivity().getFilesDir().getPath()+"database.json")));
-            String line;
-            while((line = br.readLine()) != null){
-                System.out.println(line);
-            }
-            JSONArray list = (JSONArray) parser.parse(new InputStreamReader(new FileInputStream(getActivity().getFilesDir().getPath()+"database.json")));
-            obj.put("leffa", "leffa");
-            obj.put("dataa", "dataa");
-            list.add(obj);
-            file = new OutputStreamWriter(new FileOutputStream(getActivity().getFilesDir().getPath()+"database.json"));
-            file.write(list.toJSONString());
-            file.flush();
-            file.close();
-        }catch (IOException e){
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace(); }
-
-
-    }
 
 
 }
