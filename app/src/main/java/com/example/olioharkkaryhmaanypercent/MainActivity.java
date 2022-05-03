@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         public UserData.USER currentUser;
         public UserManager() { this.currentUser = null; }
         public void setCurrentUser(String currentUser) { this.currentUser.username = currentUser; }
+        public void setNullUser() {this.currentUser=null;}
 
         public UserData.USER getCurrentUser() {
             if (this.currentUser!=null) {

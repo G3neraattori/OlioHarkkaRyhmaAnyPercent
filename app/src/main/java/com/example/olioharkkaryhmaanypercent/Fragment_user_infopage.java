@@ -77,7 +77,6 @@ public class Fragment_user_infopage extends Fragment {
         rateButton.setOnClickListener(listener);
         favouriteButton.setOnClickListener(listener);
         String imageurl = movie.getImageurl();
-        //Picture for url with picasso library        movie_info_name.setText(movie.getMovieName());
         movie_info_name.setText(movie.getMovieName());
         movie_info_description.setText(movie.getMovieDescription());
         movie_info_year.setText(Integer.toString(movie.getMovieYear()));

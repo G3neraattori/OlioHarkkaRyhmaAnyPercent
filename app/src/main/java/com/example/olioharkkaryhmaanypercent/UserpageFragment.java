@@ -36,6 +36,21 @@ public class UserpageFragment extends Fragment {
         RecyclerViewAdapter2 adapter = new RecyclerViewAdapter2(UserData.actuallyLoadUserData(MainActivity.userManager.getCurrentUser().getUsername()).values().toArray(new Movie[0]), this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
+        View.OnClickListener logoutlistener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (view == view.findViewById(R.id.logoutButton)) {
+                    MainActivity.userManager.setNullUser();
+                    Fragment fragment = new LoginFragment();
+                    FragmentManager manager = getParentFragmentManager();
+                    FragmentTransaction transaction = manager.beginTransaction();
+                    transaction.replace(R.id.fragmentWindow, fragment);
+                    transaction.commit();
+                }
+            }
+        };
+        Button logoutbutton = view.findViewById(R.id.logoutButton);
+        logoutbutton.setOnClickListener(logoutlistener);
     }
 
     public void onMovieClick(@NonNull View view, int position) {

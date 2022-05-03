@@ -38,6 +38,7 @@ public class LoginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         UserData user = new UserData(requireContext());
         UserData.USER currentUser = MainActivity.userManager.getCurrentUser();
+        System.out.println(currentUser);
         if (currentUser!=null) {
             Fragment fragment = new UserpageFragment();
             FragmentManager fragmentManager = getParentFragmentManager();
