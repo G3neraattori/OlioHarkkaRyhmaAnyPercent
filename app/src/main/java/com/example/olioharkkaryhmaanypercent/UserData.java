@@ -105,10 +105,6 @@ public class UserData extends MainActivity{
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-
-
-
-
         return generatedPassword;
     }
 
@@ -143,11 +139,8 @@ public class UserData extends MainActivity{
     public boolean validatePassword(String givenPass, String username) throws NoSuchAlgorithmException {
         JSONParser parser = new JSONParser();
         JSONObject jsonObject;
-
         try {
             JSONArray array = (JSONArray) parser.parse(new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"database.json")));
-
-
             for(int i = 0; i < array.size(); i++){
                 jsonObject = (JSONObject) array.get(i);
                 String name = (String) jsonObject.get("username");
@@ -166,17 +159,10 @@ public class UserData extends MainActivity{
                         return true;
                     }
                 }
-
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (ParseException | IOException e) {
             e.printStackTrace();
         }
-
-
         return false;
     }
 
@@ -187,7 +173,6 @@ public class UserData extends MainActivity{
         try {
             JSONArray array = (JSONArray) parser.parse(new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"database.json")));
 
-
             for(int i = 0; i < array.size(); i++){
                 jsonObject = (JSONObject) array.get(i);
                 String name = (String) jsonObject.get("username");
@@ -196,18 +181,12 @@ public class UserData extends MainActivity{
                     System.out.print("Username found\n");
                     return true;
                 }
-
             }
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (ParseException | IOException e) {
             e.printStackTrace();
         }
         System.out.println("Searching for: " + username);
-
         return false;
     }
 
@@ -235,12 +214,32 @@ public class UserData extends MainActivity{
                 e.printStackTrace();
             }
         }
-
         //TODO tarvitsee sen miten data esitetetään käyttäjäsivulla. Luultavasti parsee jsonista kaiken siihhen sivulle kivasti
+    }
+
+    public void checkIfMovieFavourite(String username, String movieName) {
+        try{
+            JSONParser parser = new JSONParser();
+
+            BufferedReader br = new BufferedReader (new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"database.json")));
+            String line;
+            while((line = br.readLine()) != null){
+                System.out.println(line);
+            }
+            JSONArray list = (JSONArray) parser.parse(new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"database.json")));
+
+            file = new OutputStreamWriter(new FileOutputStream(context.getFilesDir().getPath()+"database.json"));
+            file.write(list.toJSONString());
+            file.flush();
+            file.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace(); }
 
     }
 
-    public void saveMovie(String username){
+    public void saveMovie(USER user, Movie movie, int personal_rating){
         JSONObject obj = new JSONObject();
         try{
             JSONParser parser = new JSONParser();
@@ -251,22 +250,21 @@ public class UserData extends MainActivity{
                 System.out.println(line);
             }
             JSONArray list = (JSONArray) parser.parse(new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"database.json")));
-            obj.put("leffa", "leffa");
-            obj.put("dataa", "dataa");
+            movie.setpersonalRating(personal_rating);
+            obj.put(movie.getMovieID(), movie);
             list.add(obj);
             file = new OutputStreamWriter(new FileOutputStream(context.getFilesDir().getPath()+"database.json"));
             file.write(list.toJSONString());
             file.flush();
             file.close();
-        }catch (IOException e){
+        }catch (IOException | ParseException e){
             e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace(); }
+        }
 
 
     }
 
-    /*public class USER extends UserData{
+    public static class USER extends UserData{
         boolean newUser;
         String username;
 
@@ -274,11 +272,15 @@ public class UserData extends MainActivity{
             super(context);
         }
 
+        public String getUsername() {
+            return this.username;
+        }
+
         public void setStatus(boolean status){
             this.newUser = status;
         }
 
-    }*/
+    }
 
 
 }

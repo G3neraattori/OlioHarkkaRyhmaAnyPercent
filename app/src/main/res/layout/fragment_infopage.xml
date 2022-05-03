@@ -45,6 +45,7 @@
             android:scrollbarStyle="insideOverlay"
             android:scrollbars="vertical"
             android:text="TextView"
+            android:textSize="10dp"
             android:verticalScrollbarPosition="right"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -101,7 +102,8 @@
             app:layout_constraintBottom_toTopOf="@+id/movie_info_calendar"
             app:layout_constraintEnd_toStartOf="@+id/movie_info_description"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/movie_info_year" />
+            app:layout_constraintTop_toBottomOf="@+id/movie_info_year"
+            app:layout_constraintVertical_bias="0.0" />
 
         <Button
             android:id="@+id/movie_info_rate"

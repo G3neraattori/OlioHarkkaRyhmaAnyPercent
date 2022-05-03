@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.os.UserManager;
 import android.view.View;
 import android.widget.Button;
 
@@ -38,6 +39,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class MainActivity extends AppCompatActivity {
     public static MovieManager movieManager;
+    public static UserManager userManager;
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         movieManager = new MovieManager();
+        userManager = new UserManager();
         movieManager.generateMovieList();
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
@@ -78,6 +82,21 @@ public class MainActivity extends AppCompatActivity {
 
         // For testing class construction
     }
+
+    public class UserManager {
+        public UserData.USER currentUser;
+        public UserManager() { this.currentUser = null; }
+        public void setCurrentUser(String currentUser) { this.currentUser.username = currentUser; }
+
+        public UserData.USER getCurrentUser() {
+            if (this.currentUser!=null) {
+                return this.currentUser;
+            } else {
+                return null;
+            }
+        }
+    }
+
 
 
 
@@ -209,7 +228,6 @@ public class MainActivity extends AppCompatActivity {
                         this.getEntryList().add(new Entry(movieID, location, lengthInMin, dateTime));
                         this.spinnerTheaterList.putIfAbsent(theaterId, location);
                     }
-                    System.out.println(this.spinnerTheaterList.size() + "koko");
                 }
             } catch (IOException | SAXException | ParserConfigurationException e) {
                 e.printStackTrace();

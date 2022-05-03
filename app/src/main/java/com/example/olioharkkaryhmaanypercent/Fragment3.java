@@ -38,8 +38,14 @@ public class Fragment3 extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
         UserData user = new UserData(requireContext());
+        UserData.USER currentUser = MainActivity.userManager.getCurrentUser();
+        if (currentUser!=null) {
+            Fragment fragment = new Fragment4();
+            FragmentManager fragmentManager = getParentFragmentManager();
+            fragmentManager.beginTransaction().add(R.id.fragment3, fragment).remove(this).commit();
+            user.loadUserData(currentUser.getUsername());
+        }
         username = (EditText) getView().findViewById(R.id.username);
         salari = (EditText) getView().findViewById(R.id.salari);
         text = (TextView) getView().findViewById(R.id.textView2);
@@ -67,6 +73,8 @@ public class Fragment3 extends Fragment {
             user.loadUserData(name);
         }else{
             if(user.validatePassword(name, pass)){
+                MainActivity.userManager.currentUser = new UserData.USER(getContext());
+                MainActivity.userManager.setCurrentUser(name);
                 Fragment fragment = new Fragment4();
                 FragmentManager fragmentManager = getParentFragmentManager();
                 fragmentManager.beginTransaction().add(R.id.fragment3, fragment).remove(this).commit();
