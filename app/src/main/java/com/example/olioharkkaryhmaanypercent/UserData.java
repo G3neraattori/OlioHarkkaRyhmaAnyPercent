@@ -238,21 +238,29 @@ public class UserData extends MainActivity{
             e.printStackTrace(); }
 
     }
-
-    public void saveMovie(USER user, Movie movie, int personal_rating){
+    //, int personal_rating
+    public void saveMovie(USER user, Movie movie){
         JSONObject obj = new JSONObject();
         try{
             JSONParser parser = new JSONParser();
 
-            BufferedReader br = new BufferedReader (new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"database.json")));
+            BufferedReader br = new BufferedReader (new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"userdata"+user.getUsername()+".json")));
             String line;
             while((line = br.readLine()) != null){
                 System.out.println(line);
             }
-            JSONArray list = (JSONArray) parser.parse(new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"database.json")));
-            movie.setpersonalRating(personal_rating);
-            obj.put(movie.getMovieID(), movie);
-            list.add(obj);
+            JSONArray list = (JSONArray) parser.parse(new InputStreamReader(new FileInputStream(context.getFilesDir().getPath()+"userdata"+user.getUsername()+".json")));
+            //movie.setpersonalRating(personal_rating);
+            obj.put("name", movie.getMovieName());
+            obj.put("description", movie.getMovieDescription());
+            obj.put("year", movie.getMovieYear());
+            obj.put("imdb", movie.getImdbRating());
+            obj.put("personal", movie.getPersonalRating());
+
+            JSONObject movieObj = new JSONObject();
+            movieObj.put("Movie", obj);
+            list.add(movieObj);
+
             file = new OutputStreamWriter(new FileOutputStream(context.getFilesDir().getPath()+"database.json"));
             file.write(list.toJSONString());
             file.flush();

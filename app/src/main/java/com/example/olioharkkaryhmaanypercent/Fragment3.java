@@ -70,7 +70,7 @@ public class Fragment3 extends Fragment {
         if(!user.getUser(name)){
             user.createUser(name, pass);
 //            user.user.setStatus(true);
-            user.loadUserData(name);
+            //user.loadUserData(name);
         }else{
             if(user.validatePassword(name, pass)){
                 MainActivity.userManager.currentUser = new UserData.USER(getContext());
