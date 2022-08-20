@@ -1,4 +1,4 @@
-# OlioHarkkaRyhmaAnyPercent
+# Android Finnkino App
 An Android App for searching, saving and reading reviews for movies on current Finnkino repertoire.
 Group project for LUT Object orientated programming course.
 
